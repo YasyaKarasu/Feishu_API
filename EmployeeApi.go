@@ -52,7 +52,7 @@ const (
 func (c AppClient) GetAllEmployees(id_type UserIdType) []EmployeeInfo {
 	query := make(map[string]string)
 	query["user_id_type"] = string(id_type)
-	l := c.GetAllPages("get", "open-apis/ehr/v1/employees", nil, nil, nil, 100)
+	l := c.GetAllPages("get", "open-apis/ehr/v1/employees", query, nil, nil, 100)
 	if l == nil {
 		return nil
 	}

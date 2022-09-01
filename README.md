@@ -74,7 +74,6 @@ func Init() {
 
 	var confItems = map[string][]string{
 		"feishu": {"APP_ID", "APP_SECRET", "VERIFICATION_TOKEN", "ENCRYPT_KEY", "LARK_HOST"},
-		"server": {"PORT"},
 	}
 
 	for k, v := range confItems {
@@ -103,3 +102,15 @@ func SetAppClientConfig(c *feishuapi.AppClient) {
 }
 
 ```
+
+**config.yaml**:
+
+```yaml
+feishu:
+  APP_ID: cli_a385f***********
+  APP_SECRET: RxvCp***************************
+  VERIFICATION_TOKEN: CX5YW***************************
+  ENCRYPT_KEY: ''
+  LARK_HOST: "https://open.feishu.cn"
+```
+

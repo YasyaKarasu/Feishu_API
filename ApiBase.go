@@ -181,8 +181,6 @@ func (c AppClient) Request(method string, path string, query map[string]string, 
 		Timeout: time.Second * 15,
 	}
 
-	logrus.Info(req)
-
 	resp, err := cli.Do(req)
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
@@ -222,8 +220,6 @@ func (c AppClient) Request(method string, path string, query map[string]string, 
 	var result map[string]interface{}
 
 	json.Unmarshal(respBody, &result)
-
-	//logrus.Info(result["data"])
 
 	return result["data"].(map[string]interface{})
 }

@@ -1,4 +1,4 @@
-module feishuapi
+module github.com/YasyaKarasu/feishuapi
 
 go 1.18
 

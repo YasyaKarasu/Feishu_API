@@ -6,6 +6,7 @@ type GroupInfo struct {
 	TenantKey string
 }
 
+// Create a new GroupInfo
 func NewGroupInfo(data map[string]interface{}) *GroupInfo {
 	return &GroupInfo{
 		ChatId:    data["chat_id"].(string),
@@ -14,6 +15,7 @@ func NewGroupInfo(data map[string]interface{}) *GroupInfo {
 	}
 }
 
+// Get All the chat group that the feishu robot is in
 func (c AppClient) GetGroupList() []GroupInfo {
 	l := c.GetAllPages("get", "open-apis/im/v1/chats", nil, nil, nil, 100)
 	if l == nil {
@@ -32,6 +34,7 @@ type GroupMember struct {
 	Name   string
 }
 
+// Create a new GroupMember
 func NewGroupMember(data map[string]interface{}) *GroupMember {
 	return &GroupMember{
 		OpenId: data["member_id"].(string),
@@ -39,6 +42,7 @@ func NewGroupMember(data map[string]interface{}) *GroupMember {
 	}
 }
 
+// Get all the group members in a specific group
 func (c AppClient) GetGroupMembers(groupId string) []GroupMember {
 	body := make(map[string]string)
 	body["member_id_type"] = "open_id"

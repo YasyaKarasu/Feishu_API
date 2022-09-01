@@ -28,6 +28,7 @@ type EmployeeInfo struct {
 	Status       EmployeeStatus
 }
 
+// Create a new EmployeeInfo
 func NewEmployeeInfo(data map[string]interface{}) *EmployeeInfo {
 	sf := data["system_fields"].(map[string]interface{})
 	return &EmployeeInfo{
@@ -47,6 +48,7 @@ const (
 	UserId  UserIdType = "user_id"
 )
 
+// Get all employees' information by specific user id type
 func (c AppClient) GetAllEmployees(id_type UserIdType) []EmployeeInfo {
 	query := make(map[string]string)
 	query["user_id_type"] = string(id_type)

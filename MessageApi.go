@@ -20,6 +20,7 @@ type MsgContentType string
 
 const Text MsgContentType = "text"
 
+// Send a message to a person / chat group, return whether if it had been send successfully
 func (c AppClient) Send(receive_id_type MsgReceiverType, receive_id string, msg_type MsgContentType, msg string) bool {
 	query := make(map[string]string)
 	query["receive_id_type"] = string(receive_id_type)

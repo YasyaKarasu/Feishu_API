@@ -6,6 +6,7 @@ type DepartmentInfo struct {
 	MemberCount int
 }
 
+// Create a new DepartmentInfo
 func NewDepartmentInfo(data map[string]interface{}) *DepartmentInfo {
 	dept := data["department"].(map[string]interface{})
 	return &DepartmentInfo{
@@ -15,8 +16,9 @@ func NewDepartmentInfo(data map[string]interface{}) *DepartmentInfo {
 	}
 }
 
+// Send a request to get the information of a department by department_id
 func (c AppClient) InfoById(department_id string) *DepartmentInfo {
-	data := c.Request("get", "https://open.feishu.cn/open-apis/contact/v3/departments/"+department_id, nil, nil, nil)
+	data := c.Request("get", "open-apis/contact/v3/departments/"+department_id, nil, nil, nil)
 	if data == nil {
 		return nil
 	}

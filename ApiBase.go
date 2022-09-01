@@ -68,6 +68,7 @@ func (c *AppClient) authorizeTenantAccessToken() bool {
 	return true
 }
 
+// Start a schedular to get tenant_access_token every 105 minutes
 func (c *AppClient) StartTokenTimer() {
 	if !c.authorizeTenantAccessToken() {
 		logrus.Error("cannot get feishu token")
@@ -113,6 +114,8 @@ func responseOk(resp *http.Response) bool {
 	return code == 0
 }
 
+// Send a GET or POST string to a specific path, with header of authorization and content-type
+// (in other words, authorization and content-type should not to be passed)
 func (c AppClient) Request(method string, path string, query map[string]string, headers map[string]string, body interface{}) map[string]interface{} {
 	u := c.url(path)
 
@@ -232,6 +235,7 @@ func (c AppClient) Request(method string, path string, query map[string]string, 
 	return result["data"].(map[string]interface{})
 }
 
+// Send Request several times until all the pages of information are got
 func (c AppClient) GetAllPages(method string, path string, query map[string]string, headers map[string]string, body interface{}, page_size int) []interface{} {
 	if page_size < 10 || page_size > 100 {
 		return nil
@@ -276,6 +280,7 @@ func (c AppClient) GetAllPages(method string, path string, query map[string]stri
 	return all_list
 }
 
+// Get the value of provided key in a map, if there's no such key than return provided defaults
 func GetInMap(mapToSearch map[string]interface{}, key string, defaults interface{}) interface{} {
 	value, ok := mapToSearch[key]
 	if !ok {

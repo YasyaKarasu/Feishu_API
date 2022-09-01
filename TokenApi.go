@@ -5,6 +5,7 @@ type LoginSession struct {
 	EmployeeId string
 }
 
+// Create a new LoginSession
 func NewLoginSession(data map[string]interface{}) *LoginSession {
 	return &LoginSession{
 		OpenId:     data["open_id"].(string),
@@ -12,6 +13,7 @@ func NewLoginSession(data map[string]interface{}) *LoginSession {
 	}
 }
 
+// Get the login session by login_token
 func (c AppClient) GetLoginSession(login_token string) *LoginSession {
 	body := make(map[string]string)
 	body["code"] = login_token

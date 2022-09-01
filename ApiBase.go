@@ -12,24 +12,32 @@ import (
 
 	"github.com/robfig/cron/v3"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 )
+
+type Config struct {
+	AppId             string
+	AppSecret         string
+	VerificationToken string
+	EncryptKey        string
+	LarkHost          string
+}
 
 type AppClient struct {
 	_tenant_access_token string
 	schedular            *cron.Cron
+	Conf                 Config
 }
 
-func _url(path string) string {
-	return strings.Trim(viper.GetString("feishu.LARK_HOST"), "/") + "/" + strings.Trim(path, "/")
+func (c AppClient) url(path string) string {
+	return strings.Trim(c.Conf.LarkHost, "/") + "/" + strings.Trim(path, "/")
 }
 
 func (c *AppClient) authorizeTenantAccessToken() bool {
-	u := _url("/open-apis/auth/v3/tenant_access_token/internal")
+	u := c.url("/open-apis/auth/v3/tenant_access_token/internal")
 
 	urlValues := url.Values{}
-	urlValues.Add("app_id", viper.GetString("feishu.APP_ID"))
-	urlValues.Add("app_secret", viper.GetString("feishu.APP_SECRET"))
+	urlValues.Add("app_id", c.Conf.AppId)
+	urlValues.Add("app_secret", c.Conf.AppSecret)
 
 	resp, err := http.PostForm(u, urlValues)
 
@@ -106,7 +114,7 @@ func responseOk(resp *http.Response) bool {
 }
 
 func (c AppClient) Request(method string, path string, query map[string]string, headers map[string]string, body interface{}) map[string]interface{} {
-	u := _url(path)
+	u := c.url(path)
 
 	header := make(map[string]string, len(headers))
 	for k, v := range headers {

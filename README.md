@@ -111,6 +111,4 @@ feishu:
   APP_SECRET: RxvCp***************************
   VERIFICATION_TOKEN: CX5YW***************************
   ENCRYPT_KEY: ''
-  LARK_HOST: "https://open.feishu.cn"
 ```
-

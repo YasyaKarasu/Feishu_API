@@ -19,7 +19,6 @@ type Config struct {
 	AppSecret         string
 	VerificationToken string
 	EncryptKey        string
-	LarkHost          string
 }
 
 type AppClient struct {
@@ -29,7 +28,7 @@ type AppClient struct {
 }
 
 func (c AppClient) url(path string) string {
-	return strings.Trim(c.Conf.LarkHost, "/") + "/" + strings.Trim(path, "/")
+	return "https://open.feishu.cn" + "/" + strings.Trim(path, "/")
 }
 
 func (c *AppClient) authorizeTenantAccessToken() bool {

@@ -115,6 +115,7 @@ func responseOk(resp *http.Response) bool {
 
 // Send a GET or POST string to a specific path, with header of authorization and content-type
 // (in other words, authorization and content-type should not to be passed)
+// On the other hand, if the api needs user_access_token, then you can pass it by headers param
 func (c AppClient) Request(method string, path string, query map[string]string, headers map[string]string, body interface{}) map[string]interface{} {
 	u := c.url(path)
 
@@ -126,7 +127,7 @@ func (c AppClient) Request(method string, path string, query map[string]string, 
 	if _, ok := header["Authorization"]; !ok {
 		header["Authorization"] = "Bearer " + c._tenant_access_token
 	}
-	header["content-type"] = "application/json; charset=utf-8"
+	header["Content-Type"] = "application/json; charset=utf-8"
 
 	var req *http.Request
 

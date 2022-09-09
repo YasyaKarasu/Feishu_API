@@ -171,8 +171,6 @@ func (c AppClient) Request(method string, path string, query map[string]string, 
 			return nil
 		}
 
-		logrus.Info(body)
-
 		req, err = http.NewRequest("POST", urlPath, bytes.NewReader(bytesData))
 		if err != nil {
 			logrus.WithFields(logrus.Fields{

@@ -63,14 +63,51 @@ func NewNode(data map[string]interface{}) *Node {
 
 // Copy a node from SpaceId/NodeToken to TargetSpaceId/TargetParentToken
 func (c AppClient) CopyNode(SpaceId string, NodeToken string, TargetSpaceId string, TargetParentToken string, Title ...string) *Node {
-	query := make(map[string]string)
-	query["target_parent_token"] = TargetParentToken
-	query["target_space_id"] = TargetSpaceId
+	body := make(map[string]string)
+	body["target_parent_token"] = TargetParentToken
+	body["target_space_id"] = TargetSpaceId
 	if len(Title) != 0 {
-		query["title"] = Title[0]
+		body["title"] = Title[0]
 	}
 
-	info := c.Request("post", "open-apis/wiki/v2/spaces/"+SpaceId+"/nodes/"+NodeToken+"/copy", query, nil, nil)
+	info := c.Request("post", "open-apis/wiki/v2/spaces/"+SpaceId+"/nodes/"+NodeToken+"/copy", nil, nil, body)
 
-	return NewNode(info)
+	return NewNode(info["node"].(map[string]interface{}))
+}
+
+type NodeInfo struct {
+	NodeToken       string
+	ObjToken        string
+	ObjType         string
+	ParentNodeToken string
+	Title           string
+}
+
+func NewNodeInfo(data map[string]interface{}) *NodeInfo {
+	return &NodeInfo{
+		NodeToken:       data["node_token"].(string),
+		ObjToken:        data["obj_token"].(string),
+		ObjType:         data["obj_type"].(string),
+		ParentNodeToken: data["parent_node_token"].(string),
+		Title:           data["title"].(string),
+	}
+}
+
+func (c AppClient) GetAllNodes(SpaceId string, ParentNodeToken ...string) []NodeInfo {
+	var all_node []NodeInfo
+	var l []interface{}
+
+	if len(ParentNodeToken) != 0 {
+		query := make(map[string]string)
+		query["parent_node_token"] = ParentNodeToken[0]
+		l = c.GetAllPages("get", "open-apis/wiki/v2/spaces/"+SpaceId+"/nodes", query, nil, nil, 10)
+	} else {
+		l = c.GetAllPages("get", "open-apis/wiki/v2/spaces/"+SpaceId+"/nodes", nil, nil, nil, 10)
+	}
+
+	for _, value := range l {
+		all_node = append(all_node, *NewNodeInfo(value.(map[string]interface{})))
+	}
+
+	return all_node
 }

@@ -83,6 +83,7 @@ type NodeInfo struct {
 	Title           string
 }
 
+// Create a new NodeInfo
 func NewNodeInfo(data map[string]interface{}) *NodeInfo {
 	return &NodeInfo{
 		NodeToken:       data["node_token"].(string),
@@ -93,6 +94,7 @@ func NewNodeInfo(data map[string]interface{}) *NodeInfo {
 	}
 }
 
+// Get All Nodes in target Space and under specific ParentNode(not necessary)
 func (c AppClient) GetAllNodes(SpaceId string, ParentNodeToken ...string) []NodeInfo {
 	var all_node []NodeInfo
 	var l []interface{}

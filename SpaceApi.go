@@ -21,6 +21,7 @@ type SpaceInfo struct {
 	Visibility  Visibility
 }
 
+// Create a new SpaceInfo
 func NewSpaceInfo(data map[string]interface{}) *SpaceInfo {
 	return &SpaceInfo{
 		Name:        data["name"].(string),
@@ -31,6 +32,7 @@ func NewSpaceInfo(data map[string]interface{}) *SpaceInfo {
 	}
 }
 
+// Create a Knowledge Space
 func (c AppClient) CreateKnowledgeSpace(name string, description string, user_access_token string) *SpaceInfo {
 	body := make(map[string]string)
 	body["name"] = name
@@ -50,6 +52,7 @@ type Node struct {
 	Title           string
 }
 
+// Create a new Node
 func NewNode(data map[string]interface{}) *Node {
 	return &Node{
 		NodeToken:       data["node_token"].(string),
@@ -58,6 +61,7 @@ func NewNode(data map[string]interface{}) *Node {
 	}
 }
 
+// Copy a node from SpaceId/NodeToken to TargetSpaceId/TargetParentToken
 func (c AppClient) CopyNode(SpaceId string, NodeToken string, TargetSpaceId string, TargetParentToken string, Title ...string) *Node {
 	query := make(map[string]string)
 	query["target_parent_token"] = TargetParentToken

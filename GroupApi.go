@@ -30,15 +30,15 @@ func (c AppClient) GetGroupList() []GroupInfo {
 }
 
 type GroupMember struct {
-	OpenId string
-	Name   string
+	MemberId string
+	Name     string
 }
 
 // Create a new GroupMember
 func NewGroupMember(data map[string]interface{}) *GroupMember {
 	return &GroupMember{
-		OpenId: data["member_id"].(string),
-		Name:   data["name"].(string),
+		MemberId: data["member_id"].(string),
+		Name:     data["name"].(string),
 	}
 }
 

@@ -43,9 +43,9 @@ func NewGroupMember(data map[string]interface{}) *GroupMember {
 }
 
 // Get all the group members in a specific group
-func (c AppClient) GetGroupMembers(groupId string) []GroupMember {
+func (c AppClient) GetGroupMembers(groupId string, userIdType UserIdType) []GroupMember {
 	body := make(map[string]string)
-	body["member_id_type"] = "open_id"
+	body["member_id_type"] = string(userIdType)
 
 	l := c.GetAllPages("get", "open-apis/im/v1/chats/"+groupId+"/members", nil, nil, body, 100)
 	if l == nil {

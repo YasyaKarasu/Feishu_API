@@ -81,6 +81,7 @@ type NodeInfo struct {
 	ObjType         string
 	ParentNodeToken string
 	Title           string
+	HasChild        bool
 }
 
 // Create a new NodeInfo
@@ -91,6 +92,7 @@ func NewNodeInfo(data map[string]interface{}) *NodeInfo {
 		ObjType:         data["obj_type"].(string),
 		ParentNodeToken: data["parent_node_token"].(string),
 		Title:           data["title"].(string),
+		HasChild:        data["has_child"].(bool),
 	}
 }
 

@@ -113,7 +113,7 @@ func responseOk(resp *http.Response) bool {
 	return code == 0
 }
 
-// Send a GET or POST string to a specific path, with header of authorization and content-type
+// Send a GET / POST / DELETE string to a specific path, with header of authorization and content-type
 // (in other words, authorization and content-type should not to be passed)
 // On the other hand, if the api needs user_access_token, then you can pass it by headers param
 func (c AppClient) Request(method string, path string, query map[string]string, headers map[string]string, body interface{}) map[string]interface{} {
@@ -160,7 +160,7 @@ func (c AppClient) Request(method string, path string, query map[string]string, 
 			return nil
 		}
 
-	} else {
+	} else if strings.EqualFold(method, "post") {
 		bytesData, err := json.Marshal(body)
 		if err != nil {
 			logrus.WithFields(logrus.Fields{
@@ -172,6 +172,26 @@ func (c AppClient) Request(method string, path string, query map[string]string, 
 		}
 
 		req, err = http.NewRequest("POST", urlPath, bytes.NewReader(bytesData))
+		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"url":   u,
+				"query": query,
+				"err":   err,
+			}).Error("Request create error")
+			return nil
+		}
+	} else if strings.EqualFold(method, "delete") {
+		bytesData, err := json.Marshal(body)
+		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"url":   u,
+				"query": query,
+				"err":   err,
+			}).Error("marshal query error")
+			return nil
+		}
+
+		req, err = http.NewRequest("DELETE", urlPath, bytes.NewReader(bytesData))
 		if err != nil {
 			logrus.WithFields(logrus.Fields{
 				"url":   u,

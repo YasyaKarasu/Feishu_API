@@ -256,6 +256,7 @@ func (c AppClient) Request(method string, path string, query map[string]string, 
 // Send Request several times until all the pages of information are got
 func (c AppClient) GetAllPages(method string, path string, query map[string]string, headers map[string]string, body interface{}, page_size int) []interface{} {
 	if page_size < 10 || page_size > 100 {
+		logrus.Info("page_size should be between 10 and 100")
 		return nil
 	}
 

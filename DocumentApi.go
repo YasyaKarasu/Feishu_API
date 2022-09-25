@@ -22,7 +22,7 @@ func NewBitableInfo(data map[string]interface{}) *BitableInfo {
 func (c AppClient) GetAllBitables(DocumentId string) []BitableInfo {
 	var all_bitables []BitableInfo
 
-	l := c.GetAllPages("get", "open-apis/docx/v1/documents/"+DocumentId+"/blocks", nil, nil, nil, 500)
+	l := c.GetAllPages("get", "open-apis/docx/v1/documents/"+DocumentId+"/blocks", nil, nil, nil, 100)
 
 	for _, value := range l {
 		info := value.(map[string]interface{})

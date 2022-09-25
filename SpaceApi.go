@@ -46,6 +46,23 @@ func (c AppClient) CreateKnowledgeSpace(name string, description string, user_ac
 	return NewSpaceInfo(info)
 }
 
+// Add members to a Knowledge Space
+func (c AppClient) AddMembersToKnowledgeSpace(spaceId string, membersId []string, userIdType UserIdType) {
+	body := make(map[string]string)
+	if userIdType == UserId {
+		body["member_type"] = "userid"
+	} else if userIdType == OpenId {
+		body["member_type"] = "openid"
+	} else {
+		body["member_type"] = "unionid"
+	}
+	body["member_role"] = "member"
+	for _, v := range membersId {
+		body["member_id"] = v
+		c.Request("post", "open-apis/wiki/v2/spaces/"+spaceId+"/members", nil, nil, body)
+	}
+}
+
 type Node struct {
 	NodeToken       string
 	ParentNodeToken string

@@ -1,6 +1,10 @@
 package feishuapi
 
-import "strings"
+import (
+	"io"
+	"net/http"
+	"strings"
+)
 
 type BitableInfo struct {
 	BlockId  string
@@ -91,4 +95,29 @@ func (c AppClient) GetRecord(AppToken string, TableId string, RecordId string) *
 	record := c.Request("get", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records/"+RecordId, nil, nil, nil)
 
 	return NewRecordInfo(record)
+}
+
+// Get a []Byte form Record by AppToken, TableId and RecordId
+func (c AppClient) GetRecordInByte(AppToken string, TableId string, RecordId string) []byte {
+	client := &http.Client{}
+	url := "https://open.feishu.cn/open-apis/bitable/v1/apps/" + AppToken + "/tables/" + TableId + "/records/" + RecordId
+	req, err := http.NewRequest("GET", url, nil)
+
+	if err != nil {
+		panic(err)
+	}
+	req.Header.Add("Authorization", "Bearer "+c._tenant_access_token)
+
+	res, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	return body
 }

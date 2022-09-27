@@ -85,3 +85,10 @@ func (c AppClient) GetAllRecords(AppToken string, TableId string) []RecordInfo {
 
 	return all_records
 }
+
+// Get A Record by AppToken, TableId and RecordId
+func (c AppClient) GetRecord(AppToken string, TableId string, RecordId string) *RecordInfo {
+	record := c.Request("get", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records/"+RecordId, nil, nil, nil)
+
+	return NewRecordInfo(record)
+}

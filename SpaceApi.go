@@ -43,7 +43,7 @@ func (c AppClient) CreateKnowledgeSpace(name string, description string, user_ac
 
 	info := c.Request("post", "open-apis/wiki/v2/spaces", nil, headers, body)
 
-	return NewSpaceInfo(info)
+	return NewSpaceInfo(info["space"].(map[string]interface{}))
 }
 
 // Add members to a Knowledge Space

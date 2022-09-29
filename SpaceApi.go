@@ -47,15 +47,10 @@ func (c AppClient) CreateKnowledgeSpace(name string, description string, user_ac
 }
 
 // Add members to a Knowledge Space
-func (c AppClient) AddMembersToKnowledgeSpace(spaceId string, membersId []string, userIdType UserIdType) {
+// memberType: "openchat" for chat id, "userid" for feishuapi.UserId, "unionid" for feishuapi.UnionId, "opendepartmentid" for DepartmentId
+func (c AppClient) AddMembersToKnowledgeSpace(spaceId string, membersId []string, memberType string) {
 	body := make(map[string]string)
-	if userIdType == UserId {
-		body["member_type"] = "userid"
-	} else if userIdType == OpenId {
-		body["member_type"] = "openid"
-	} else {
-		body["member_type"] = "unionid"
-	}
+	body["member_type"] = memberType
 	body["member_role"] = "member"
 	for _, v := range membersId {
 		body["member_id"] = v

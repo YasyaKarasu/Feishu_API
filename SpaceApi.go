@@ -58,6 +58,17 @@ func (c AppClient) AddMembersToKnowledgeSpace(spaceId string, membersId []string
 	}
 }
 
+// Add robots to a Knowledge Space as admin
+func (c AppClient) AddBotsToKnowledgeSpaceAsAdmin(spaceId string, BotsId []string) {
+	body := make(map[string]string)
+	body["member_type"] = "openid"
+	body["member_role"] = "admin"
+	for _, v := range BotsId {
+		body["member_id"] = v
+		c.Request("post", "open-apis/wiki/v2/spaces/"+spaceId+"/members", nil, nil, body)
+	}
+}
+
 type Node struct {
 	NodeToken       string
 	ParentNodeToken string

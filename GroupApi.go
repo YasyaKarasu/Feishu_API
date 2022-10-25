@@ -60,12 +60,12 @@ func (c AppClient) GetGroupMembers(groupId string, userIdType UserIdType) []Grou
 }
 
 // CreateGroup Create a new group
-func (c AppClient) CreateGroup(groupName string, user_id_type string, owner_id string) *GroupInfo {
+func (c AppClient) CreateGroup(groupName string, userIdType string, ownerId string) *GroupInfo {
 	query := make(map[string]string)
-	query["user_id_type"] = string(user_id_type)
+	query["user_id_type"] = string(userIdType)
 	body := make(map[string]string)
 	body["name"] = groupName
-	body["owner_id"] = owner_id
+	body["owner_id"] = ownerId
 
 	info := c.Request("post", "open-apis/im/v1/chats", query, nil, body)
 
@@ -73,37 +73,37 @@ func (c AppClient) CreateGroup(groupName string, user_id_type string, owner_id s
 }
 
 // GetGroupInfo Get a group information
-func (c AppClient) GetGroupInfo(chat_id string) *GroupInfo {
-	info := c.Request("get", "open-apis/im/v1/chats/"+chat_id+"?user_id_type=open_id", nil, nil, nil)
-	info["chat_id"] = chat_id
+func (c AppClient) GetGroupInfo(chatId string) *GroupInfo {
+	info := c.Request("get", "open-apis/im/v1/chats/"+chatId+"?user_id_type=open_id", nil, nil, nil)
+	info["chat_id"] = chatId
 	info["tenant_key"] = ""
 	return NewGroupInfo(info)
 }
 
 // AddMembers
 // app_id to add bot
-func (c AppClient) AddMembers(chat_id string, member_id_type string, succeed_type string, id_list []string) bool {
+func (c AppClient) AddMembers(chatId string, memberIdType UserIdType, succeedType string, idList []string) bool {
 	query := make(map[string]string)
-	query["member_id_type"] = string(member_id_type)
-	query["succeed_type"] = string(succeed_type)
+	query["member_id_type"] = string(memberIdType)
+	query["succeed_type"] = succeedType
 
 	body := make(map[string][]string)
 
 	var result bool = true
 	var idlist []string
 
-	for len(id_list) > 50 {
+	for len(idList) > 50 {
 
-		idlist = id_list[0:50]
+		idlist = idList[0:50]
 		body["id_list"] = idlist
-		resp := c.Request("post", "open-apis/im/v1/chats/"+chat_id+"/members", query, nil, body)
-		id_list = append(id_list[:0], id_list[50:]...)
+		resp := c.Request("post", "open-apis/im/v1/chats/"+chatId+"/members", query, nil, body)
+		idList = append(idList[:0], idList[50:]...)
 		if resp == nil {
 			result = false
 		}
 	}
-	body["id_list"] = id_list
-	resp := c.Request("post", "open-apis/im/v1/chats/"+chat_id+"/members", query, nil, body)
+	body["id_list"] = idList
+	resp := c.Request("post", "open-apis/im/v1/chats/"+chatId+"/members", query, nil, body)
 	if resp == nil {
 		result = false
 	}
@@ -112,27 +112,27 @@ func (c AppClient) AddMembers(chat_id string, member_id_type string, succeed_typ
 
 // DeleteMembers
 // app_id to delete bot
-func (c AppClient) DeleteMembers(chat_id string, member_id_type string, id_list []string) bool {
+func (c AppClient) DeleteMembers(chatId string, memberIdType UserIdType, idList []string) bool {
 	query := make(map[string]string)
-	query["member_id_type"] = string(member_id_type)
+	query["member_id_type"] = string(memberIdType)
 
 	body := make(map[string][]string)
 
 	var result bool = true
 	var idlist []string
 
-	for len(id_list) > 50 {
+	for len(idList) > 50 {
 
-		idlist = id_list[0:50]
+		idlist = idList[0:50]
 		body["id_list"] = idlist
-		resp := c.Request("delete", "open-apis/im/v1/chats/"+chat_id+"/members", query, nil, body)
-		id_list = append(id_list[:0], id_list[50:]...)
+		resp := c.Request("delete", "open-apis/im/v1/chats/"+chatId+"/members", query, nil, body)
+		idList = append(idList[:0], idList[50:]...)
 		if resp == nil {
 			result = false
 		}
 	}
-	body["id_list"] = id_list
-	resp := c.Request("delete", "open-apis/im/v1/chats/"+chat_id+"/members", query, nil, body)
+	body["id_list"] = idList
+	resp := c.Request("delete", "open-apis/im/v1/chats/"+chatId+"/members", query, nil, body)
 	if resp == nil {
 		result = false
 	}

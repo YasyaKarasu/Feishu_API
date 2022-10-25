@@ -98,7 +98,6 @@ func SetAppClientConfig(c *feishuapi.AppClient) {
 	c.Conf.AppSecret = viper.GetString("feishu.APP_SECRET")
 	c.Conf.VerificationToken = viper.GetString("feishu.VERIFICATION_TOKEN")
 	c.Conf.EncryptKey = viper.GetString("feishu.ENCRYPT_KEY")
-	c.Conf.LarkHost = viper.GetString("feishu.LARK_HOST")
 }
 
 ```

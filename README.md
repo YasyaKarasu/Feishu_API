@@ -73,7 +73,7 @@ func Init() {
 	logrus.Info("Configuration file loaded")
 
 	var confItems = map[string][]string{
-		"feishu": {"APP_ID", "APP_SECRET", "VERIFICATION_TOKEN", "ENCRYPT_KEY", "LARK_HOST"},
+		"feishu": {"APP_ID", "APP_SECRET", "VERIFICATION_TOKEN", "ENCRYPT_KEY"},
 	}
 
 	for k, v := range confItems {

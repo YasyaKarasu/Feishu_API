@@ -17,8 +17,8 @@ type SpaceInfo struct {
 	Name        string
 	Description string
 	SpaceId     string
-	SpaceType   SpaceType
-	Visibility  Visibility
+	// SpaceType   SpaceType
+	// Visibility  Visibility
 }
 
 // Create a new SpaceInfo
@@ -27,8 +27,8 @@ func NewSpaceInfo(data map[string]interface{}) *SpaceInfo {
 		Name:        data["name"].(string),
 		Description: data["description"].(string),
 		SpaceId:     data["space_id"].(string),
-		SpaceType:   data["space_type"].(SpaceType),
-		Visibility:  data["visibility"].(Visibility),
+		// SpaceType:   data["space_type"].(SpaceType),
+		// Visibility:  data["visibility"].(Visibility),
 	}
 }
 

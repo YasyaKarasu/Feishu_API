@@ -60,7 +60,7 @@ func (c AppClient) GetGroupMembers(groupId string, userIdType UserIdType) []Grou
 }
 
 // CreateGroup Create a new group
-func (c AppClient) CreateGroup(groupName string, userIdType string, ownerId string) *GroupInfo {
+func (c AppClient) CreateGroup(groupName string, userIdType UserIdType, ownerId string) *GroupInfo {
 	query := make(map[string]string)
 	query["user_id_type"] = string(userIdType)
 	body := make(map[string]string)

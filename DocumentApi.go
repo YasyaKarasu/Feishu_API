@@ -69,19 +69,21 @@ func (c AppClient) GetAllTables(AppToken string) []TableInfo {
 }
 
 type RecordInfo struct {
-	AppToken string
-	TableId  string
-	RecordId string
-	Fields   map[string]interface{}
+	AppToken         string
+	TableId          string
+	RecordId         string
+	LastModifiedTime int
+	Fields           map[string]interface{}
 }
 
 // Create a new RecordInfo
 func NewRecordInfo(AppToken string, TableId string, data map[string]interface{}) *RecordInfo {
 	return &RecordInfo{
-		AppToken: AppToken,
-		TableId:  TableId,
-		RecordId: data["record_id"].(string),
-		Fields:   data["fields"].(map[string]interface{}),
+		AppToken:         AppToken,
+		TableId:          TableId,
+		RecordId:         data["record_id"].(string),
+		LastModifiedTime: int(data["last_modified_time"].(float64)),
+		Fields:           data["fields"].(map[string]interface{}),
 	}
 }
 

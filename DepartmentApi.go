@@ -1,5 +1,7 @@
 package feishuapi
 
+import "github.com/sirupsen/logrus"
+
 type DepartmentInfo struct {
 	Name        string
 	GroupId     string
@@ -17,9 +19,10 @@ func NewDepartmentInfo(data map[string]interface{}) *DepartmentInfo {
 }
 
 // Send a request to get the information of a department by department_id
-func (c AppClient) InfoById(department_id string) *DepartmentInfo {
+func (c AppClient) GetDepartmentInfoById(department_id string) *DepartmentInfo {
 	data := c.Request("get", "open-apis/contact/v3/departments/"+department_id, nil, nil, nil)
 	if data == nil {
+		logrus.WithField("DepartmentID", department_id).Warn("nil department info return")
 		return nil
 	}
 	return NewDepartmentInfo(data)

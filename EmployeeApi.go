@@ -1,5 +1,7 @@
 package feishuapi
 
+import "github.com/sirupsen/logrus"
+
 type EmployeeType int
 
 const (
@@ -54,6 +56,7 @@ func (c AppClient) GetAllEmployees(id_type UserIdType) []EmployeeInfo {
 	query["user_id_type"] = string(id_type)
 	l := c.GetAllPages("get", "open-apis/ehr/v1/employees", query, nil, nil, 100)
 	if l == nil {
+		logrus.Warn("nil employee info return")
 		return nil
 	}
 
@@ -61,5 +64,6 @@ func (c AppClient) GetAllEmployees(id_type UserIdType) []EmployeeInfo {
 	for _, value := range l {
 		all_employees = append(all_employees, *NewEmployeeInfo(value.(map[string]interface{})))
 	}
+
 	return all_employees
 }

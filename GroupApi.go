@@ -1,5 +1,7 @@
 package feishuapi
 
+import "github.com/sirupsen/logrus"
+
 type GroupInfo struct {
 	ChatId    string
 	Name      string
@@ -19,6 +21,7 @@ func NewGroupInfo(data map[string]interface{}) *GroupInfo {
 func (c AppClient) GetGroupList() []GroupInfo {
 	l := c.GetAllPages("get", "open-apis/im/v1/chats", nil, nil, nil, 100)
 	if l == nil {
+		logrus.Warn("nil group info return")
 		return nil
 	}
 
@@ -26,6 +29,7 @@ func (c AppClient) GetGroupList() []GroupInfo {
 	for _, value := range l {
 		all_groups = append(all_groups, *NewGroupInfo(value.(map[string]interface{})))
 	}
+
 	return all_groups
 }
 
@@ -49,6 +53,7 @@ func (c AppClient) GetGroupMembers(groupId string, userIdType UserIdType) []Grou
 
 	l := c.GetAllPages("get", "open-apis/im/v1/chats/"+groupId+"/members", nil, nil, body, 100)
 	if l == nil {
+		logrus.WithField("GroupID", groupId).Warn("nil group member info return")
 		return nil
 	}
 
@@ -56,6 +61,7 @@ func (c AppClient) GetGroupMembers(groupId string, userIdType UserIdType) []Grou
 	for _, value := range l {
 		all_members = append(all_members, *NewGroupMember(value.(map[string]interface{})))
 	}
+
 	return all_members
 }
 
@@ -69,12 +75,26 @@ func (c AppClient) CreateGroup(groupName string, userIdType UserIdType, ownerId 
 
 	info := c.Request("post", "open-apis/im/v1/chats", query, nil, body)
 
+	if info == nil {
+		logrus.WithFields(logrus.Fields{
+			"GroupName": groupName,
+			"OwnerID":   ownerId,
+		}).Error("create group fail")
+		return nil
+	}
+
 	return NewGroupInfo(info)
 }
 
 // GetGroupInfo Get a group information
 func (c AppClient) GetGroupInfo(chatId string) *GroupInfo {
 	info := c.Request("get", "open-apis/im/v1/chats/"+chatId+"?user_id_type=open_id", nil, nil, nil)
+
+	if info == nil {
+		logrus.WithField("ChatID", chatId).Warn("nil group info return")
+		return nil
+	}
+
 	info["chat_id"] = chatId
 	info["tenant_key"] = ""
 	return NewGroupInfo(info)
@@ -93,18 +113,25 @@ func (c AppClient) AddMembers(chatId string, memberIdType UserIdType, succeedTyp
 	var idlist []string
 
 	for len(idList) > 50 {
-
 		idlist = idList[0:50]
 		body["id_list"] = idlist
 		resp := c.Request("post", "open-apis/im/v1/chats/"+chatId+"/members", query, nil, body)
 		idList = append(idList[:0], idList[50:]...)
 		if resp == nil {
+			logrus.WithFields(logrus.Fields{
+				"ChatID": chatId,
+				"IdList": idList,
+			}).Error("add member fail")
 			result = false
 		}
 	}
 	body["id_list"] = idList
 	resp := c.Request("post", "open-apis/im/v1/chats/"+chatId+"/members", query, nil, body)
 	if resp == nil {
+		logrus.WithFields(logrus.Fields{
+			"ChatID": chatId,
+			"IdList": idList,
+		}).Error("add member fail")
 		result = false
 	}
 	return result
@@ -122,18 +149,25 @@ func (c AppClient) DeleteMembers(chatId string, memberIdType UserIdType, idList 
 	var idlist []string
 
 	for len(idList) > 50 {
-
 		idlist = idList[0:50]
 		body["id_list"] = idlist
 		resp := c.Request("delete", "open-apis/im/v1/chats/"+chatId+"/members", query, nil, body)
 		idList = append(idList[:0], idList[50:]...)
 		if resp == nil {
+			logrus.WithFields(logrus.Fields{
+				"ChatID": chatId,
+				"IdList": idList,
+			}).Error("delete member fail")
 			result = false
 		}
 	}
 	body["id_list"] = idList
 	resp := c.Request("delete", "open-apis/im/v1/chats/"+chatId+"/members", query, nil, body)
 	if resp == nil {
+		logrus.WithFields(logrus.Fields{
+			"ChatID": chatId,
+			"IdList": idList,
+		}).Error("delete member fail")
 		result = false
 	}
 	return result

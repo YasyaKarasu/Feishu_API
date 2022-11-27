@@ -1,5 +1,7 @@
 package feishuapi
 
+import "github.com/sirupsen/logrus"
+
 type LoginSession struct {
 	OpenId     string
 	EmployeeId string
@@ -37,6 +39,7 @@ func (c AppClient) GetLoginSession(login_token string) *LoginSession {
 
 	resp := c.Request("post", "open-apis/mina/v2/tokenLoginValidate", nil, nil, body)
 	if resp == nil {
+		logrus.Error("nil login session return")
 		return nil
 	}
 	return NewLoginSession(resp)
@@ -51,6 +54,11 @@ func (c *AppClient) GetUserAccessToken(code string) *UserAccessToken {
 	body["code"] = code
 
 	resp := c.Request("post", u, nil, nil, body)
+
+	if resp == nil {
+		logrus.Error("nil user access token return")
+		return nil
+	}
 
 	return NewUserAccessToken(resp)
 }

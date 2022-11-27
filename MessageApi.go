@@ -48,5 +48,13 @@ func (c AppClient) Send(receiveIdType MsgReceiverType, receiveId string, msgType
 	body["msg_type"] = string(msgType)
 
 	resp := c.Request("post", "open-apis/im/v1/messages", query, nil, body)
+
+	if resp == nil {
+		logrus.WithFields(logrus.Fields{
+			"ReceiveID": receiveId,
+			"Msg":       msg,
+		}).Error("message send error")
+	}
+
 	return resp != nil
 }

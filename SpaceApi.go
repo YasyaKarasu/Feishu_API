@@ -1,5 +1,7 @@
 package feishuapi
 
+import "github.com/sirupsen/logrus"
+
 type SpaceType string
 type Visibility string
 
@@ -17,8 +19,6 @@ type SpaceInfo struct {
 	Name        string
 	Description string
 	SpaceId     string
-	// SpaceType   SpaceType
-	// Visibility  Visibility
 }
 
 // Create a new SpaceInfo
@@ -27,8 +27,6 @@ func NewSpaceInfo(data map[string]interface{}) *SpaceInfo {
 		Name:        data["name"].(string),
 		Description: data["description"].(string),
 		SpaceId:     data["space_id"].(string),
-		// SpaceType:   data["space_type"].(SpaceType),
-		// Visibility:  data["visibility"].(Visibility),
 	}
 }
 
@@ -43,6 +41,14 @@ func (c AppClient) CreateKnowledgeSpace(name string, description string, user_ac
 
 	info := c.Request("post", "open-apis/wiki/v2/spaces", nil, headers, body)
 
+	if info == nil {
+		logrus.WithFields(logrus.Fields{
+			"Name":        name,
+			"Description": description,
+		}).Error("create knowledge space fail")
+		return nil
+	}
+
 	return NewSpaceInfo(info["space"].(map[string]interface{}))
 }
 
@@ -54,7 +60,15 @@ func (c AppClient) AddMembersToKnowledgeSpace(spaceId string, membersId []string
 	body["member_role"] = "member"
 	for _, v := range membersId {
 		body["member_id"] = v
-		c.Request("post", "open-apis/wiki/v2/spaces/"+spaceId+"/members", nil, nil, body)
+		resp := c.Request("post", "open-apis/wiki/v2/spaces/"+spaceId+"/members", nil, nil, body)
+
+		if resp == nil {
+			logrus.WithFields(logrus.Fields{
+				"SpaceID":    spaceId,
+				"MemberType": memberType,
+				"MemberID":   v,
+			}).Warn("add member fail")
+		}
 	}
 }
 
@@ -69,7 +83,14 @@ func (c AppClient) AddBotsToKnowledgeSpaceAsAdmin(spaceId string, BotsId []strin
 
 	for _, v := range BotsId {
 		body["member_id"] = v
-		c.Request("post", "open-apis/wiki/v2/spaces/"+spaceId+"/members", nil, headers, body)
+		resp := c.Request("post", "open-apis/wiki/v2/spaces/"+spaceId+"/members", nil, headers, body)
+
+		if resp == nil {
+			logrus.WithFields(logrus.Fields{
+				"SpaceID":  spaceId,
+				"MemberID": v,
+			}).Warn("add bot fail")
+		}
 	}
 }
 
@@ -98,6 +119,16 @@ func (c AppClient) CopyNode(SpaceId string, NodeToken string, TargetSpaceId stri
 	}
 
 	info := c.Request("post", "open-apis/wiki/v2/spaces/"+SpaceId+"/nodes/"+NodeToken+"/copy", nil, nil, body)
+
+	if info == nil {
+		logrus.WithFields(logrus.Fields{
+			"SpaceID":           SpaceId,
+			"NodeToken":         NodeToken,
+			"TargetSpaceID":     TargetSpaceId,
+			"TargetParentToken": TargetParentToken,
+		}).Error("copy node fail")
+		return nil
+	}
 
 	return NewNode(info["node"].(map[string]interface{}))
 }
@@ -134,6 +165,11 @@ func (c AppClient) GetAllNodes(SpaceId string, ParentNodeToken ...string) []Node
 		l = c.GetAllPages("get", "open-apis/wiki/v2/spaces/"+SpaceId+"/nodes", query, nil, nil, 10)
 	} else {
 		l = c.GetAllPages("get", "open-apis/wiki/v2/spaces/"+SpaceId+"/nodes", nil, nil, nil, 10)
+	}
+
+	if l == nil {
+		logrus.WithField("SpaceID", SpaceId).Error("nil node info return")
+		return nil
 	}
 
 	for _, value := range l {

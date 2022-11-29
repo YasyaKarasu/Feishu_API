@@ -91,11 +91,11 @@ type RecordInfo struct {
 // Create a new RecordInfo
 func NewRecordInfo(AppToken string, TableId string, data map[string]interface{}) *RecordInfo {
 	return &RecordInfo{
-		AppToken:         AppToken,
-		TableId:          TableId,
-		RecordId:         data["record_id"].(string),
-		LastModifiedTime: int(data["last_modified_time"].(float64)),
-		Fields:           data["fields"].(map[string]interface{}),
+		AppToken: AppToken,
+		TableId:  TableId,
+		RecordId: data["record_id"].(string),
+		//astModifiedTime: int(data["last_modified_time"].(float64)),
+		Fields: data["fields"].(map[string]interface{}),
 	}
 }
 

@@ -51,7 +51,7 @@ const (
 )
 
 // Get all employees' information by specific user id type
-func (c AppClient) GetAllEmployees(id_type UserIdType) []EmployeeInfo {
+func (c AppClient) EmployeeGetAllInfo(id_type UserIdType) []EmployeeInfo {
 	query := make(map[string]string)
 	query["user_id_type"] = string(id_type)
 	l := c.GetAllPages("get", "open-apis/ehr/v1/employees", query, nil, nil, 100)

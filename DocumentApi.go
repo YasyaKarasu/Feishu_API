@@ -25,7 +25,7 @@ func NewBitableInfo(data map[string]interface{}) *BitableInfo {
 }
 
 // Get all Bitables in a Document
-func (c AppClient) GetAllBitables(DocumentId string) []BitableInfo {
+func (c AppClient) DocumentGetAllBitables(DocumentId string) []BitableInfo {
 	var all_bitables []BitableInfo
 
 	l := c.GetAllPages("get", "open-apis/docx/v1/documents/"+DocumentId+"/blocks", nil, nil, nil, 100)
@@ -63,7 +63,7 @@ func NewTableInfo(AppToken string, data map[string]interface{}) *TableInfo {
 }
 
 // Get all tables by AppToken
-func (c AppClient) GetAllTablesInBitable(AppToken string) []TableInfo {
+func (c AppClient) DocumentGetAllTables(AppToken string) []TableInfo {
 	var all_tables []TableInfo
 
 	l := c.GetAllPages("get", "open-apis/bitable/v1/apps/"+AppToken+"/tables", nil, nil, nil, 100)
@@ -100,7 +100,7 @@ func NewRecordInfo(AppToken string, TableId string, data map[string]interface{})
 }
 
 // Get all Records by AppToken and TableId
-func (c AppClient) GetAllRecordsInTable(AppToken string, TableId string) []RecordInfo {
+func (c AppClient) DocumentGetAllRecords(AppToken string, TableId string) []RecordInfo {
 	var all_records []RecordInfo
 
 	l := c.GetAllPages("get", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records", nil, nil, nil, 100)
@@ -121,7 +121,7 @@ func (c AppClient) GetAllRecordsInTable(AppToken string, TableId string) []Recor
 }
 
 // Get A Record by AppToken, TableId and RecordId
-func (c AppClient) GetRecordInTable(AppToken string, TableId string, RecordId string) *RecordInfo {
+func (c AppClient) DocumentGetRecord(AppToken string, TableId string, RecordId string) *RecordInfo {
 	record := c.Request("get", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records/"+RecordId, nil, nil, nil)
 
 	if record == nil {
@@ -137,7 +137,7 @@ func (c AppClient) GetRecordInTable(AppToken string, TableId string, RecordId st
 }
 
 // Get a []Byte form Record by AppToken, TableId and RecordId
-func (c AppClient) GetRecordInTableInByte(AppToken string, TableId string, RecordId string) []byte {
+func (c AppClient) DocumentGetRecordInByte(AppToken string, TableId string, RecordId string) []byte {
 	client := &http.Client{}
 	url := "https://open.feishu.cn/open-apis/bitable/v1/apps/" + AppToken + "/tables/" + TableId + "/records/" + RecordId
 	req, err := http.NewRequest("GET", url, nil)
@@ -164,7 +164,7 @@ func (c AppClient) GetRecordInTableInByte(AppToken string, TableId string, Recor
 	return body
 }
 
-func (c AppClient) GetRawContent(DocumentId string) string {
+func (c AppClient) DocumentGetRawContent(DocumentId string) string {
 	resp := c.Request("get", "open-apis/docx/v1/documents/"+DocumentId+"/raw_content", nil, nil, nil)
 	content := resp["content"].(string)
 

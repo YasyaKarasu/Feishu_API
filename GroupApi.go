@@ -18,7 +18,7 @@ func NewGroupInfo(data map[string]interface{}) *GroupInfo {
 }
 
 // Get All the chat group that the feishu robot is in
-func (c AppClient) GetGroupList() []GroupInfo {
+func (c AppClient) GroupGetAllInfo() []GroupInfo {
 	l := c.GetAllPages("get", "open-apis/im/v1/chats", nil, nil, nil, 100)
 	if l == nil {
 		logrus.Warn("nil group info return")
@@ -47,7 +47,7 @@ func NewGroupMember(data map[string]interface{}) *GroupMember {
 }
 
 // Get all the group members in a specific group
-func (c AppClient) GetGroupMembers(groupId string, userIdType UserIdType) []GroupMember {
+func (c AppClient) GroupGetMembers(groupId string, userIdType UserIdType) []GroupMember {
 	body := make(map[string]string)
 	body["member_id_type"] = string(userIdType)
 
@@ -66,7 +66,7 @@ func (c AppClient) GetGroupMembers(groupId string, userIdType UserIdType) []Grou
 }
 
 // CreateGroup Create a new group
-func (c AppClient) CreateGroup(groupName string, userIdType UserIdType, ownerId string) *GroupInfo {
+func (c AppClient) GroupCreate(groupName string, userIdType UserIdType, ownerId string) *GroupInfo {
 	query := make(map[string]string)
 	query["user_id_type"] = string(userIdType)
 	body := make(map[string]string)
@@ -87,7 +87,7 @@ func (c AppClient) CreateGroup(groupName string, userIdType UserIdType, ownerId 
 }
 
 // GetGroupInfo Get a group information
-func (c AppClient) GetGroupInfo(chatId string) *GroupInfo {
+func (c AppClient) GroupGetInfo(chatId string) *GroupInfo {
 	info := c.Request("get", "open-apis/im/v1/chats/"+chatId+"?user_id_type=open_id", nil, nil, nil)
 
 	if info == nil {
@@ -102,7 +102,7 @@ func (c AppClient) GetGroupInfo(chatId string) *GroupInfo {
 
 // AddMembers
 // app_id to add bot
-func (c AppClient) AddMembers(chatId string, memberIdType UserIdType, succeedType string, idList []string) bool {
+func (c AppClient) GroupAddMembers(chatId string, memberIdType UserIdType, succeedType string, idList []string) bool {
 	query := make(map[string]string)
 	query["member_id_type"] = string(memberIdType)
 	query["succeed_type"] = succeedType
@@ -139,7 +139,7 @@ func (c AppClient) AddMembers(chatId string, memberIdType UserIdType, succeedTyp
 
 // DeleteMembers
 // app_id to delete bot
-func (c AppClient) DeleteMembers(chatId string, memberIdType UserIdType, idList []string) bool {
+func (c AppClient) GroupDeleteMembers(chatId string, memberIdType UserIdType, idList []string) bool {
 	query := make(map[string]string)
 	query["member_id_type"] = string(memberIdType)
 

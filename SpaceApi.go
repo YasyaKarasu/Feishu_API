@@ -31,7 +31,7 @@ func NewSpaceInfo(data map[string]interface{}) *SpaceInfo {
 }
 
 // Create a Knowledge Space
-func (c AppClient) CreateKnowledgeSpace(name string, description string, user_access_token string) *SpaceInfo {
+func (c AppClient) KnowledgeSpaceCreate(name string, description string, user_access_token string) *SpaceInfo {
 	body := make(map[string]string)
 	body["name"] = name
 	body["description"] = description
@@ -54,7 +54,7 @@ func (c AppClient) CreateKnowledgeSpace(name string, description string, user_ac
 
 // Add members to a Knowledge Space
 // memberType: "openchat" for chat id, "userid" for feishuapi.UserId, "unionid" for feishuapi.UnionId, "opendepartmentid" for DepartmentId
-func (c AppClient) AddMembersToKnowledgeSpace(spaceId string, membersId []string, memberType string) {
+func (c AppClient) KnowledgeSpaceAddMembers(spaceId string, membersId []string, memberType string) {
 	body := make(map[string]string)
 	body["member_type"] = memberType
 	body["member_role"] = "member"
@@ -73,7 +73,7 @@ func (c AppClient) AddMembersToKnowledgeSpace(spaceId string, membersId []string
 }
 
 // Add robots to a Knowledge Space as admin
-func (c AppClient) AddBotsToKnowledgeSpaceAsAdmin(spaceId string, BotsId []string, user_access_token string) {
+func (c AppClient) KnowledgeSpaceAddBotsAsAdmin(spaceId string, BotsId []string, user_access_token string) {
 	headers := make(map[string]string)
 	headers["Authorization"] = user_access_token
 
@@ -110,7 +110,7 @@ func NewNode(data map[string]interface{}) *Node {
 }
 
 // Copy a node from SpaceId/NodeToken to TargetSpaceId/TargetParentToken
-func (c AppClient) CopyNode(SpaceId string, NodeToken string, TargetSpaceId string, TargetParentToken string, Title ...string) *Node {
+func (c AppClient) KnowledgeSpaceCopyNode(SpaceId string, NodeToken string, TargetSpaceId string, TargetParentToken string, Title ...string) *Node {
 	body := make(map[string]string)
 	body["target_parent_token"] = TargetParentToken
 	body["target_space_id"] = TargetSpaceId
@@ -155,7 +155,7 @@ func NewNodeInfo(data map[string]interface{}) *NodeInfo {
 }
 
 // Get All Nodes in target Space and under specific ParentNode(not necessary)
-func (c AppClient) GetAllNodes(SpaceId string, ParentNodeToken ...string) []NodeInfo {
+func (c AppClient) KnowledgeSpaceGetAllNodes(SpaceId string, ParentNodeToken ...string) []NodeInfo {
 	var all_node []NodeInfo
 	var l []interface{}
 

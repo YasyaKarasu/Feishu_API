@@ -22,7 +22,7 @@ func NewRobotInfo(data map[string]interface{}) *RobotInfo {
 	}
 }
 
-func (c AppClient) GetRobotInfo() *RobotInfo {
+func (c AppClient) RobotGetInfo() *RobotInfo {
 	u := "https://open.feishu.cn/open-apis/bot/v3/info"
 
 	header := make(map[string]string)

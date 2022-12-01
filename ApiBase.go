@@ -300,7 +300,7 @@ func (c AppClient) GetAllPages(method string, path string, query map[string]stri
 }
 
 // Get the value of provided key in a map, if there's no such key than return provided defaults
-func GetInMap(mapToSearch map[string]interface{}, key string, defaults interface{}) interface{} {
+func getInMap(mapToSearch map[string]interface{}, key string, defaults interface{}) interface{} {
 	value, ok := mapToSearch[key]
 	if !ok {
 		return defaults

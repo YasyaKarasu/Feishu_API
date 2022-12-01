@@ -2,19 +2,6 @@ package feishuapi
 
 import "github.com/sirupsen/logrus"
 
-type SpaceType string
-type Visibility string
-
-const (
-	Team   SpaceType = "team"
-	Person SpaceType = "person"
-)
-
-const (
-	Public  Visibility = "public"
-	Private Visibility = "private"
-)
-
 type SpaceInfo struct {
 	Name        string
 	Description string
@@ -94,45 +81,6 @@ func (c AppClient) KnowledgeSpaceAddBotsAsAdmin(spaceId string, BotsId []string,
 	}
 }
 
-type Node struct {
-	NodeToken       string
-	ParentNodeToken string
-	Title           string
-}
-
-// Create a new Node
-func NewNode(data map[string]interface{}) *Node {
-	return &Node{
-		NodeToken:       data["node_token"].(string),
-		ParentNodeToken: data["parent_node_token"].(string),
-		Title:           data["title"].(string),
-	}
-}
-
-// Copy a node from SpaceId/NodeToken to TargetSpaceId/TargetParentToken
-func (c AppClient) KnowledgeSpaceCopyNode(SpaceId string, NodeToken string, TargetSpaceId string, TargetParentToken string, Title ...string) *Node {
-	body := make(map[string]string)
-	body["target_parent_token"] = TargetParentToken
-	body["target_space_id"] = TargetSpaceId
-	if len(Title) != 0 {
-		body["title"] = Title[0]
-	}
-
-	info := c.Request("post", "open-apis/wiki/v2/spaces/"+SpaceId+"/nodes/"+NodeToken+"/copy", nil, nil, body)
-
-	if info == nil {
-		logrus.WithFields(logrus.Fields{
-			"SpaceID":           SpaceId,
-			"NodeToken":         NodeToken,
-			"TargetSpaceID":     TargetSpaceId,
-			"TargetParentToken": TargetParentToken,
-		}).Error("copy node fail")
-		return nil
-	}
-
-	return NewNode(info["node"].(map[string]interface{}))
-}
-
 type NodeInfo struct {
 	NodeToken       string
 	ObjToken        string
@@ -152,6 +100,30 @@ func NewNodeInfo(data map[string]interface{}) *NodeInfo {
 		Title:           data["title"].(string),
 		HasChild:        data["has_child"].(bool),
 	}
+}
+
+// Copy a node from SpaceId/NodeToken to TargetSpaceId/TargetParentToken
+func (c AppClient) KnowledgeSpaceCopyNode(SpaceId string, NodeToken string, TargetSpaceId string, TargetParentToken string, Title ...string) *NodeInfo {
+	body := make(map[string]string)
+	body["target_parent_token"] = TargetParentToken
+	body["target_space_id"] = TargetSpaceId
+	if len(Title) != 0 {
+		body["title"] = Title[0]
+	}
+
+	info := c.Request("post", "open-apis/wiki/v2/spaces/"+SpaceId+"/nodes/"+NodeToken+"/copy", nil, nil, body)
+
+	if info == nil {
+		logrus.WithFields(logrus.Fields{
+			"SpaceID":           SpaceId,
+			"NodeToken":         NodeToken,
+			"TargetSpaceID":     TargetSpaceId,
+			"TargetParentToken": TargetParentToken,
+		}).Error("copy node fail")
+		return nil
+	}
+
+	return NewNodeInfo(info["node"].(map[string]interface{}))
 }
 
 // Get All Nodes in target Space and under specific ParentNode(not necessary)

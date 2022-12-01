@@ -36,7 +36,7 @@ func NewEmployeeInfo(data map[string]interface{}) *EmployeeInfo {
 	return &EmployeeInfo{
 		Id:           data["user_id"].(string),
 		Name:         sf["name"].(string),
-		DepartmentId: GetInMap(sf, "department_id", "").(string),
+		DepartmentId: getInMap(sf, "department_id", "").(string),
 		EmployeeType: EmployeeType(int(sf["employee_type"].(float64))),
 		Status:       EmployeeStatus(int(sf["status"].(float64))),
 	}

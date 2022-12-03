@@ -121,7 +121,7 @@ type AppClient struct {
 
 #### Function
 
-#### func (AppClient) StartTokenTimer
+##### func (AppClient) StartTokenTimer
 
 ```go
 func (c *AppClient) StartTokenTimer()
@@ -129,7 +129,7 @@ func (c *AppClient) StartTokenTimer()
 
 立即获取一次 tenant_access_token 并开启计时器，每 105 分钟更新一次。
 
-#### func (AppClient) Request
+##### func (AppClient) Request
 
 ```go
 func (c AppClient) Request(method string, path string, query map[string]string, headers map[string]string, body interface{}) map[string]interface{}
@@ -139,7 +139,7 @@ func (c AppClient) Request(method string, path string, query map[string]string, 
 
 返回值为 api 响应体的 data 部分。
 
-#### func (AppClient) GetAllPages
+##### func (AppClient) GetAllPages
 
 ```go
 func (c AppClient) GetAllPages(method string, path string, query map[string]string, headers map[string]string, body interface{}, page_size int) []interface{}

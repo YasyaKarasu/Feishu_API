@@ -12,6 +12,7 @@ type UserAccessToken struct {
 	Name          string
 	Refresh_token string
 	User_id       string
+	Open_id       string
 }
 
 // Create a new LoginSession
@@ -29,6 +30,7 @@ func NewUserAccessToken(data map[string]interface{}) *UserAccessToken {
 		Name:          data["name"].(string),
 		Refresh_token: data["refresh_token"].(string),
 		User_id:       data["user_id"].(string),
+		Open_id:       data["open_id"].(string),
 	}
 }
 

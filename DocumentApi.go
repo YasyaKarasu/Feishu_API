@@ -103,7 +103,9 @@ func NewRecordInfo(AppToken string, TableId string, data map[string]interface{})
 func (c AppClient) DocumentGetAllRecords(AppToken string, TableId string) []RecordInfo {
 	var all_records []RecordInfo
 
-	l := c.GetAllPages("get", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records", nil, nil, nil, 100)
+	query := make(map[string]string)
+	query["automatic_fields"] = "true"
+	l := c.GetAllPages("get", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records", query, nil, nil, 100)
 
 	if l == nil {
 		logrus.WithFields(logrus.Fields{
@@ -122,7 +124,9 @@ func (c AppClient) DocumentGetAllRecords(AppToken string, TableId string) []Reco
 
 // Get A Record by AppToken, TableId and RecordId
 func (c AppClient) DocumentGetRecord(AppToken string, TableId string, RecordId string) *RecordInfo {
-	record := c.Request("get", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records/"+RecordId, nil, nil, nil)
+	query := make(map[string]string)
+	query["automatic_fields"] = "true"
+	record := c.Request("get", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records/"+RecordId, query, nil, nil)
 
 	if record == nil {
 		logrus.WithFields(logrus.Fields{

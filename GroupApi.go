@@ -172,3 +172,19 @@ func (c AppClient) GroupDeleteMembers(chatId string, memberIdType UserIdType, id
 	}
 	return result
 }
+
+func (c AppClient) GroupChangeOwner(chatId string, memberIdType UserIdType, ownerId string) {
+	query := make(map[string]string)
+	query["user_id_type"] = string(memberIdType)
+
+	body := make(map[string]string)
+	body["owner_id"] = ownerId
+
+	resp := c.Request("put", "open-apis/im/v1/chats/"+chatId, query, nil, body)
+	if resp == nil {
+		logrus.WithFields(logrus.Fields{
+			"ChatID":     chatId,
+			"NewOwnerId": ownerId,
+		}).Warn("change group owner fail")
+	}
+}

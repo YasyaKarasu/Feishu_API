@@ -7,7 +7,7 @@ import (
 )
 
 type TimeInfo struct {
-	Timestamp string
+	Timestamp string `json:"timestamp"`
 }
 
 type VChat struct {
@@ -23,15 +23,25 @@ type Reminder struct {
 	Minutes int `json:"minutes"`
 }
 
+type EventAttendeeAbility string
+
+const (
+	AttendeeAbilityNone            EventAttendeeAbility = "none"
+	AttendeeAbilityCanSeeOthers    EventAttendeeAbility = "can_see_others"
+	AttendeeAbilityCanInviteOthers EventAttendeeAbility = "can_invite_others"
+	AttendeeAbilityCanModifyEvent  EventAttendeeAbility = "can_modify_event"
+)
+
 type CalendarEventCreateRequest struct {
-	Summary          string        `json:"summary,omitempty"`
-	Description      string        `json:"description,omitempty"`
-	NeedNotification bool          `json:"need_notification"`
-	StartTime        TimeInfo      `json:"start_time,omitempty"`
-	EndTime          TimeInfo      `json:"end_time,omitempty"`
-	VChat            VChat         `json:"vchat,omitempty"`
-	Location         EventLocation `json:"location,omitempty"`
-	Reminders        []Reminder    `json:"reminders,omitempty"`
+	Summary          string               `json:"summary,omitempty"`
+	Description      string               `json:"description,omitempty"`
+	NeedNotification bool                 `json:"need_notification"`
+	StartTime        TimeInfo             `json:"start_time,omitempty"`
+	EndTime          TimeInfo             `json:"end_time,omitempty"`
+	VChat            VChat                `json:"vchat,omitempty"`
+	AttendeeAbiliy   EventAttendeeAbility `json:"attendee_ability,omitempty"`
+	Location         EventLocation        `json:"location,omitempty"`
+	Reminders        []Reminder           `json:"reminders,omitempty"`
 }
 
 func DefaultCalendarEventCreateRequest() *CalendarEventCreateRequest {
@@ -44,6 +54,7 @@ func DefaultCalendarEventCreateRequest() *CalendarEventCreateRequest {
 		VChat: VChat{
 			VCType: "vc",
 		},
+		AttendeeAbiliy: AttendeeAbilityCanSeeOthers,
 		Location: EventLocation{
 			Name:    "",
 			Address: "",
@@ -78,6 +89,11 @@ func (c *CalendarEventCreateRequest) WithStartTime(startTime time.Time) *Calenda
 
 func (c *CalendarEventCreateRequest) WithEndTime(endTime time.Time) *CalendarEventCreateRequest {
 	c.EndTime.Timestamp = strconv.FormatInt(endTime.Unix(), 10)
+	return c
+}
+
+func (c *CalendarEventCreateRequest) WithAttendeeAbility(ability EventAttendeeAbility) *CalendarEventCreateRequest {
+	c.AttendeeAbiliy = ability
 	return c
 }
 
@@ -185,7 +201,15 @@ func (c AppClient) CalendarEventAttendeeCreate(calendarId string, eventId string
 	struct2map(attendee, &body)
 
 	info := c.Request("post", "open-apis/calendar/v4/calendars/"+calendarId+"/events/"+eventId+"/attendees", query, nil, body)
-	return info["attendees"].([]CalendarEventAttendee)
+	attendees_ := info["attendees"].([]interface{})
+
+	attendees := []CalendarEventAttendee{}
+	for _, attendee_ := range attendees_ {
+		attendee := CalendarEventAttendee{}
+		map2struct(attendee_.(map[string]interface{}), &attendee)
+		attendees = append(attendees, attendee)
+	}
+	return attendees
 }
 
 func (c AppClient) CalendarEventAttendeeQuery(calendarId string, eventId string, userIdType UserIdType) []CalendarEventAttendee {
@@ -195,8 +219,10 @@ func (c AppClient) CalendarEventAttendeeQuery(calendarId string, eventId string,
 	info := c.GetAllPages("get", "open-apis/calendar/v4/calendars/"+calendarId+"/events/"+eventId+"/attendees", query, nil, nil, 100)
 
 	attendees := []CalendarEventAttendee{}
-	for _, attendee := range info {
-		attendees = append(attendees, attendee.(CalendarEventAttendee))
+	for _, attendee_ := range info {
+		attendee := CalendarEventAttendee{}
+		map2struct(attendee_.(map[string]interface{}), &attendee)
+		attendees = append(attendees, attendee)
 	}
 	return attendees
 }

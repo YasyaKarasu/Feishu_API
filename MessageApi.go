@@ -18,7 +18,10 @@ const (
 
 type MsgContentType string
 
-const Text MsgContentType = "text"
+const (
+	Text        MsgContentType = "text"
+	Interactive MsgContentType = "interactive"
+)
 
 // Send a message to a person / chat group, return whether if it had been send successfully
 func (c AppClient) MessageSend(receiveIdType MsgReceiverType, receiveId string, msgType MsgContentType, msg string) bool {
@@ -27,7 +30,8 @@ func (c AppClient) MessageSend(receiveIdType MsgReceiverType, receiveId string, 
 
 	content := ""
 
-	if msgType == Text {
+	switch msgType {
+	case Text:
 		contmap := make(map[string]string)
 		contmap["text"] = msg
 		bytecont, err := json.Marshal(contmap)
@@ -41,6 +45,11 @@ func (c AppClient) MessageSend(receiveIdType MsgReceiverType, receiveId string, 
 			return false
 		}
 		content = string(bytecont)
+	case Interactive:
+		content = msg
+	default:
+		logrus.WithField("msgType", msgType).Error("message type unsupported")
+		return false
 	}
 	body := make(map[string]string)
 	body["receive_id"] = receiveId

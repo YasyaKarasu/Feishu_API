@@ -140,7 +140,7 @@ type CalendarEventAttendeeType string
 
 const (
 	AttendeeTypeUser       CalendarEventAttendeeType = "user"
-	AttendeeTypeChar       CalendarEventAttendeeType = "char"
+	AttendeeTypeChat       CalendarEventAttendeeType = "char"
 	AttendeeTypeResource   CalendarEventAttendeeType = "resource"
 	AttendeeTypeThirdParty CalendarEventAttendeeType = "third_party"
 )

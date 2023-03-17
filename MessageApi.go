@@ -24,7 +24,7 @@ const (
 )
 
 // Send a message to a person / chat group, return whether if it had been send successfully
-func (c AppClient) MessageSend(receiveIdType MsgReceiverType, receiveId string, msgType MsgContentType, msg string) bool {
+func (c AppClient) MessageSend(receiveIdType MsgReceiverType, receiveId string, msgType MsgContentType, msg string) (string, bool) {
 	query := make(map[string]string)
 	query["receive_id_type"] = string(receiveIdType)
 
@@ -42,14 +42,14 @@ func (c AppClient) MessageSend(receiveIdType MsgReceiverType, receiveId string, 
 				"msg_type":        string(msgType),
 				"msg":             msg,
 			}).Error("marshal text to json fail")
-			return false
+			return "", false
 		}
 		content = string(bytecont)
 	case Interactive:
 		content = msg
 	default:
 		logrus.WithField("msgType", msgType).Error("message type unsupported")
-		return false
+		return "", false
 	}
 	body := make(map[string]string)
 	body["receive_id"] = receiveId
@@ -63,7 +63,8 @@ func (c AppClient) MessageSend(receiveIdType MsgReceiverType, receiveId string, 
 			"ReceiveID": receiveId,
 			"Msg":       msg,
 		}).Error("message send error")
+		return "", false
 	}
 
-	return resp != nil
+	return resp["message_id"].(string), true
 }

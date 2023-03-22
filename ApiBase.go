@@ -171,27 +171,7 @@ func (c AppClient) Request(method string, path string, query map[string]string, 
 			return nil
 		}
 
-		req, err = http.NewRequest("POST", urlPath, bytes.NewReader(bytesData))
-		if err != nil {
-			logrus.WithFields(logrus.Fields{
-				"url":   u,
-				"query": query,
-				"err":   err,
-			}).Error("Request create error")
-			return nil
-		}
-	} else if strings.EqualFold(method, "delete") {
-		bytesData, err := json.Marshal(body)
-		if err != nil {
-			logrus.WithFields(logrus.Fields{
-				"url":   u,
-				"query": query,
-				"err":   err,
-			}).Error("marshal query error")
-			return nil
-		}
-
-		req, err = http.NewRequest("DELETE", urlPath, bytes.NewReader(bytesData))
+		req, err = http.NewRequest(strings.ToUpper(method), urlPath, bytes.NewReader(bytesData))
 		if err != nil {
 			logrus.WithFields(logrus.Fields{
 				"url":   u,

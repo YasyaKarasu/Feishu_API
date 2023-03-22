@@ -160,7 +160,7 @@ func (c AppClient) Request(method string, path string, query map[string]string, 
 			return nil
 		}
 
-	} else if strings.EqualFold(method, "post") {
+	} else {
 		bytesData, err := json.Marshal(body)
 		if err != nil {
 			logrus.WithFields(logrus.Fields{

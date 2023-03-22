@@ -70,8 +70,8 @@ func (c AppClient) MessageSend(receiveIdType MsgReceiverType, receiveId string, 
 }
 
 func (c AppClient) UpdateMessage(mid string, content string) {
-	query := make(map[string]string, 0)
-	query["content"] = content
+	body := make(map[string]string)
+	body["content"] = content
 
-	c.Request("patch", "open-apis/im/v1/messages/"+mid, query, nil, nil)
+	c.Request("patch", "open-apis/im/v1/messages/"+mid, nil, nil, body)
 }

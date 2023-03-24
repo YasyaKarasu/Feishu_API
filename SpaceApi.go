@@ -102,6 +102,20 @@ func NewNodeInfo(data map[string]interface{}) *NodeInfo {
 	}
 }
 
+func (c AppClient) KnowledgeSpaceGetNodeInfo(NodeToken string) *NodeInfo {
+	query := make(map[string]string)
+	query["token"] = NodeToken
+
+	info := c.Request("get", "open-apis/wiki/v2/spaces/get_node", query, nil, nil)
+
+	if info == nil {
+		logrus.WithField("NodeToken", NodeToken).Error("copy node fail")
+		return nil
+	}
+
+	return NewNodeInfo(info["node"].(map[string]interface{}))
+}
+
 // Copy a node from SpaceId/NodeToken to TargetSpaceId/TargetParentToken
 func (c AppClient) KnowledgeSpaceCopyNode(SpaceId string, NodeToken string, TargetSpaceId string, TargetParentToken string, Title ...string) *NodeInfo {
 	body := make(map[string]string)

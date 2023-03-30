@@ -174,3 +174,30 @@ func (c AppClient) DocumentGetRawContent(DocumentId string) string {
 
 	return content
 }
+
+// Append data to a sheet in a spreadsheet, return the actual range of the appended data
+func (c AppClient) SheetAppendData(SpreadSheetToken string, SheetId string, Range string, Data [][]interface{}) string {
+	body := make(map[string]interface{})
+	body["range"] = SheetId + "!" + Range
+	body["values"] = Data
+	abody := make(map[string]interface{})
+	abody["valueRange"] = body
+
+	resp := c.Request("post", "open-apis/sheet/v2/spreadsheets/"+SpreadSheetToken+"/values_append", nil, nil, abody)
+	return resp["tableRange"].(string)
+}
+
+func (c AppClient) SheetGetData(SpreadSheetToken string, SheetId string, Range string) []interface{} {
+	resp := c.Request("get", "open-apis/sheet/v2/spreadsheets/"+SpreadSheetToken+"/values/"+SheetId+"!"+Range, nil, nil, nil)
+	return resp["valueRange"].(map[string]interface{})["values"].([]interface{})
+}
+
+func (c AppClient) SheetWriteData(SpreadSheetToken string, SheetId string, Range string, Data [][]interface{}) {
+	body := make(map[string]interface{})
+	body["range"] = SheetId + "!" + Range
+	body["values"] = Data
+	abody := make(map[string]interface{})
+	abody["valueRange"] = body
+
+	c.Request("put", "open-apis/sheet/v2/spreadsheets/"+SpreadSheetToken+"/values", nil, nil, abody)
+}

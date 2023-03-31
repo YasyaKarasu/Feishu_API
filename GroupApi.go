@@ -9,7 +9,7 @@ type GroupInfo struct {
 }
 
 // Create a new GroupInfo
-func NewGroupInfo(data map[string]interface{}) *GroupInfo {
+func NewGroupInfo(data map[string]any) *GroupInfo {
 	return &GroupInfo{
 		ChatId:    data["chat_id"].(string),
 		Name:      data["name"].(string),
@@ -27,7 +27,7 @@ func (c AppClient) GroupGetAllInfo() []GroupInfo {
 
 	var all_groups []GroupInfo
 	for _, value := range l {
-		all_groups = append(all_groups, *NewGroupInfo(value.(map[string]interface{})))
+		all_groups = append(all_groups, *NewGroupInfo(value.(map[string]any)))
 	}
 
 	return all_groups
@@ -39,7 +39,7 @@ type GroupMember struct {
 }
 
 // Create a new GroupMember
-func NewGroupMember(data map[string]interface{}) *GroupMember {
+func NewGroupMember(data map[string]any) *GroupMember {
 	return &GroupMember{
 		MemberId: data["member_id"].(string),
 		Name:     data["name"].(string),
@@ -59,7 +59,7 @@ func (c AppClient) GroupGetMembers(groupId string, userIdType UserIdType) []Grou
 
 	var all_members []GroupMember
 	for _, value := range l {
-		all_members = append(all_members, *NewGroupMember(value.(map[string]interface{})))
+		all_members = append(all_members, *NewGroupMember(value.(map[string]any)))
 	}
 
 	return all_members

@@ -14,8 +14,8 @@ type BitableInfo struct {
 }
 
 // Create a new BitableInfo
-func NewBitableInfo(data map[string]interface{}) *BitableInfo {
-	bitInfo := data["bitable"].(map[string]interface{})
+func NewBitableInfo(data map[string]any) *BitableInfo {
+	bitInfo := data["bitable"].(map[string]any)
 	token := bitInfo["token"].(string)
 	splitToken := strings.Split(token, "_")
 	return &BitableInfo{
@@ -36,7 +36,7 @@ func (c AppClient) DocumentGetAllBitables(DocumentId string) []BitableInfo {
 	}
 
 	for _, value := range l {
-		info := value.(map[string]interface{})
+		info := value.(map[string]any)
 		if info["block_type"].(float64) == 18 {
 			all_bitables = append(all_bitables, *NewBitableInfo(info))
 		}
@@ -53,7 +53,7 @@ type TableInfo struct {
 }
 
 // Create a new TableInfo
-func NewTableInfo(AppToken string, data map[string]interface{}) *TableInfo {
+func NewTableInfo(AppToken string, data map[string]any) *TableInfo {
 	return &TableInfo{
 		AppToken: AppToken,
 		TableId:  data["table_id"].(string),
@@ -74,7 +74,7 @@ func (c AppClient) DocumentGetAllTables(AppToken string) []TableInfo {
 	}
 
 	for _, value := range l {
-		all_tables = append(all_tables, *NewTableInfo(AppToken, value.(map[string]interface{})))
+		all_tables = append(all_tables, *NewTableInfo(AppToken, value.(map[string]any)))
 	}
 
 	return all_tables
@@ -85,17 +85,17 @@ type RecordInfo struct {
 	TableId          string
 	RecordId         string
 	LastModifiedTime int
-	Fields           map[string]interface{}
+	Fields           map[string]any
 }
 
 // Create a new RecordInfo
-func NewRecordInfo(AppToken string, TableId string, data map[string]interface{}) *RecordInfo {
+func NewRecordInfo(AppToken string, TableId string, data map[string]any) *RecordInfo {
 	return &RecordInfo{
 		AppToken:         AppToken,
 		TableId:          TableId,
 		RecordId:         data["record_id"].(string),
 		LastModifiedTime: int(data["last_modified_time"].(float64)),
-		Fields:           data["fields"].(map[string]interface{}),
+		Fields:           data["fields"].(map[string]any),
 	}
 }
 
@@ -116,7 +116,7 @@ func (c AppClient) DocumentGetAllRecords(AppToken string, TableId string) []Reco
 	}
 
 	for _, value := range l {
-		all_records = append(all_records, *NewRecordInfo(AppToken, TableId, value.(map[string]interface{})))
+		all_records = append(all_records, *NewRecordInfo(AppToken, TableId, value.(map[string]any)))
 	}
 
 	return all_records

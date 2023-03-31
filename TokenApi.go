@@ -16,7 +16,7 @@ type UserAccessToken struct {
 }
 
 // Create a new LoginSession
-func NewLoginSession(data map[string]interface{}) *LoginSession {
+func NewLoginSession(data map[string]any) *LoginSession {
 	return &LoginSession{
 		OpenId:     data["open_id"].(string),
 		EmployeeId: data["employee_id"].(string),
@@ -24,7 +24,7 @@ func NewLoginSession(data map[string]interface{}) *LoginSession {
 }
 
 // Create a new UserAccessToken
-func NewUserAccessToken(data map[string]interface{}) *UserAccessToken {
+func NewUserAccessToken(data map[string]any) *UserAccessToken {
 	return &UserAccessToken{
 		Access_token:  data["access_token"].(string),
 		Name:          data["name"].(string),

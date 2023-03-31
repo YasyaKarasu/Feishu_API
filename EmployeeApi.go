@@ -31,8 +31,8 @@ type EmployeeInfo struct {
 }
 
 // Create a new EmployeeInfo
-func NewEmployeeInfo(data map[string]interface{}) *EmployeeInfo {
-	sf := data["system_fields"].(map[string]interface{})
+func NewEmployeeInfo(data map[string]any) *EmployeeInfo {
+	sf := data["system_fields"].(map[string]any)
 	return &EmployeeInfo{
 		Id:           data["user_id"].(string),
 		Name:         sf["name"].(string),
@@ -62,7 +62,7 @@ func (c AppClient) EmployeeGetAllInfo(id_type UserIdType) []EmployeeInfo {
 
 	var all_employees []EmployeeInfo
 	for _, value := range l {
-		all_employees = append(all_employees, *NewEmployeeInfo(value.(map[string]interface{})))
+		all_employees = append(all_employees, *NewEmployeeInfo(value.(map[string]any)))
 	}
 
 	return all_employees

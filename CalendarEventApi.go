@@ -117,7 +117,7 @@ type CalendarEvent struct {
 	EventInfo           CalendarEventCreateRequest
 }
 
-func NewCalendarEvent(data map[string]interface{}) *CalendarEvent {
+func NewCalendarEvent(data map[string]any) *CalendarEvent {
 	eventInfo := CalendarEventCreateRequest{}
 	map2struct(data, &eventInfo)
 	return &CalendarEvent{
@@ -128,11 +128,11 @@ func NewCalendarEvent(data map[string]interface{}) *CalendarEvent {
 }
 
 func (c AppClient) CalendarEventCreate(calendarId string, calendarEvent *CalendarEventCreateRequest) *CalendarEvent {
-	body := make(map[string]interface{})
+	body := make(map[string]any)
 	struct2map(calendarEvent, &body)
 
 	info := c.Request("post", "open-apis/calendar/v4/calendars/"+calendarId+"/events", nil, nil, body)
-	return NewCalendarEvent(info["event"].(map[string]interface{}))
+	return NewCalendarEvent(info["event"].(map[string]any))
 }
 
 func (c AppClient) CalendarEventList(calendarId string) []CalendarEvent {
@@ -142,7 +142,7 @@ func (c AppClient) CalendarEventList(calendarId string) []CalendarEvent {
 	events := c.GetAllPages("get", "open-apis/calendar/v4/calendars/"+calendarId+"/events", query, nil, nil, 100)
 	var calendarEvents []CalendarEvent
 	for _, event := range events {
-		calendarEvents = append(calendarEvents, *NewCalendarEvent(event.(map[string]interface{})))
+		calendarEvents = append(calendarEvents, *NewCalendarEvent(event.(map[string]any)))
 	}
 	return calendarEvents
 }
@@ -208,16 +208,16 @@ func (c AppClient) CalendarEventAttendeeCreate(calendarId string, eventId string
 	query := make(map[string]string)
 	query["user_id_type"] = string(userIdType)
 
-	body := make(map[string]interface{})
+	body := make(map[string]any)
 	struct2map(attendee, &body)
 
 	info := c.Request("post", "open-apis/calendar/v4/calendars/"+calendarId+"/events/"+eventId+"/attendees", query, nil, body)
-	attendees_ := info["attendees"].([]interface{})
+	attendees_ := info["attendees"].([]any)
 
 	attendees := []CalendarEventAttendee{}
 	for _, attendee_ := range attendees_ {
 		attendee := CalendarEventAttendee{}
-		map2struct(attendee_.(map[string]interface{}), &attendee)
+		map2struct(attendee_.(map[string]any), &attendee)
 		attendees = append(attendees, attendee)
 	}
 	return attendees
@@ -232,18 +232,18 @@ func (c AppClient) CalendarEventAttendeeQuery(calendarId string, eventId string,
 	attendees := []CalendarEventAttendee{}
 	for _, attendee_ := range info {
 		attendee := CalendarEventAttendee{}
-		map2struct(attendee_.(map[string]interface{}), &attendee)
+		map2struct(attendee_.(map[string]any), &attendee)
 		attendees = append(attendees, attendee)
 	}
 	return attendees
 }
 
-func struct2map(s interface{}, m interface{}) {
+func struct2map(s any, m any) {
 	bytes, _ := json.Marshal(s)
 	json.Unmarshal(bytes, m)
 }
 
-func map2struct(m map[string]interface{}, s interface{}) {
+func map2struct(m map[string]any, s any) {
 	bytes, _ := json.Marshal(m)
 	json.Unmarshal(bytes, s)
 }

@@ -9,7 +9,7 @@ type SpaceInfo struct {
 }
 
 // Create a new SpaceInfo
-func NewSpaceInfo(data map[string]interface{}) *SpaceInfo {
+func NewSpaceInfo(data map[string]any) *SpaceInfo {
 	return &SpaceInfo{
 		Name:        data["name"].(string),
 		Description: data["description"].(string),
@@ -36,7 +36,7 @@ func (c AppClient) KnowledgeSpaceCreate(name string, description string, user_ac
 		return nil
 	}
 
-	return NewSpaceInfo(info["space"].(map[string]interface{}))
+	return NewSpaceInfo(info["space"].(map[string]any))
 }
 
 // Add members to a Knowledge Space
@@ -91,7 +91,7 @@ type NodeInfo struct {
 }
 
 // Create a new NodeInfo
-func NewNodeInfo(data map[string]interface{}) *NodeInfo {
+func NewNodeInfo(data map[string]any) *NodeInfo {
 	return &NodeInfo{
 		NodeToken:       data["node_token"].(string),
 		ObjToken:        data["obj_token"].(string),
@@ -113,7 +113,7 @@ func (c AppClient) KnowledgeSpaceGetNodeInfo(NodeToken string) *NodeInfo {
 		return nil
 	}
 
-	return NewNodeInfo(info["node"].(map[string]interface{}))
+	return NewNodeInfo(info["node"].(map[string]any))
 }
 
 // Copy a node from SpaceId/NodeToken to TargetSpaceId/TargetParentToken
@@ -137,13 +137,13 @@ func (c AppClient) KnowledgeSpaceCopyNode(SpaceId string, NodeToken string, Targ
 		return nil
 	}
 
-	return NewNodeInfo(info["node"].(map[string]interface{}))
+	return NewNodeInfo(info["node"].(map[string]any))
 }
 
 // Get All Nodes in target Space and under specific ParentNode(not necessary)
 func (c AppClient) KnowledgeSpaceGetAllNodes(SpaceId string, ParentNodeToken ...string) []NodeInfo {
 	var all_node []NodeInfo
-	var l []interface{}
+	var l []any
 
 	if len(ParentNodeToken) != 0 {
 		query := make(map[string]string)
@@ -159,7 +159,7 @@ func (c AppClient) KnowledgeSpaceGetAllNodes(SpaceId string, ParentNodeToken ...
 	}
 
 	for _, value := range l {
-		all_node = append(all_node, *NewNodeInfo(value.(map[string]interface{})))
+		all_node = append(all_node, *NewNodeInfo(value.(map[string]any)))
 	}
 
 	return all_node

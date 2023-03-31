@@ -42,7 +42,7 @@ type Calendar struct {
 	CalendarInfo CalendarCreateRequest
 }
 
-func NewCalendar(data map[string]interface{}) *Calendar {
+func NewCalendar(data map[string]any) *Calendar {
 	return &Calendar{
 		Id: data["calendar_id"].(string),
 		CalendarInfo: CalendarCreateRequest{
@@ -54,9 +54,9 @@ func NewCalendar(data map[string]interface{}) *Calendar {
 }
 
 func (c AppClient) CalendarCreate(calendar *CalendarCreateRequest) *Calendar {
-	body := make(map[string]interface{})
+	body := make(map[string]any)
 	struct2map(calendar, &body)
 
 	info := c.Request("post", "open-apis/calendar/v4/calendars", nil, nil, body)
-	return NewCalendar(info["calendar"].(map[string]interface{}))
+	return NewCalendar(info["calendar"].(map[string]any))
 }

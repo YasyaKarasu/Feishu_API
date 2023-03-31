@@ -50,7 +50,7 @@ func (c *AppClient) authorizeTenantAccessToken() bool {
 
 	defer resp.Body.Close()
 
-	var result map[string]interface{}
+	var result map[string]any
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -88,7 +88,7 @@ func responseOk(resp *http.Response) bool {
 		return false
 	}
 
-	var result map[string]interface{}
+	var result map[string]any
 
 	body, err := ioutil.ReadAll(resp.Body)
 	resp.Body = ioutil.NopCloser(bytes.NewBuffer(body))
@@ -116,7 +116,7 @@ func responseOk(resp *http.Response) bool {
 // Send a GET / POST / DELETE string to a specific path, with header of authorization and content-type
 // (in other words, authorization and content-type should not to be passed)
 // On the other hand, if the api needs user_access_token, then you can pass it by headers param
-func (c AppClient) Request(method string, path string, query map[string]string, headers map[string]string, body interface{}) map[string]interface{} {
+func (c AppClient) Request(method string, path string, query map[string]string, headers map[string]string, body any) map[string]any {
 	u := c.url(path)
 
 	header := make(map[string]string, len(headers))
@@ -226,21 +226,21 @@ func (c AppClient) Request(method string, path string, query map[string]string, 
 		return nil
 	}
 
-	var result map[string]interface{}
+	var result map[string]any
 
 	json.Unmarshal(respBody, &result)
 
-	return result["data"].(map[string]interface{})
+	return result["data"].(map[string]any)
 }
 
 // Send Request several times until all the pages of information are got
-func (c AppClient) GetAllPages(method string, path string, query map[string]string, headers map[string]string, body interface{}, page_size int) []interface{} {
+func (c AppClient) GetAllPages(method string, path string, query map[string]string, headers map[string]string, body any, page_size int) []any {
 	if page_size < 10 || page_size > 100 {
 		logrus.Info("page_size should be between 10 and 100")
 		return nil
 	}
 
-	var all_list []interface{}
+	var all_list []any
 	page_token := ""
 	has_more := true
 	queries := make(map[string]string)
@@ -264,7 +264,7 @@ func (c AppClient) GetAllPages(method string, path string, query map[string]stri
 			return nil
 		}
 
-		l := resp["items"].([]interface{})
+		l := resp["items"].([]any)
 		has_more = resp["has_more"].(bool)
 		interface_page_token, ok := resp["page_token"]
 		if ok {
@@ -280,7 +280,7 @@ func (c AppClient) GetAllPages(method string, path string, query map[string]stri
 }
 
 // Get the value of provided key in a map, if there's no such key than return provided defaults
-func getInMap(mapToSearch map[string]interface{}, key string, defaults interface{}) interface{} {
+func getInMap(mapToSearch map[string]any, key string, defaults any) any {
 	value, ok := mapToSearch[key]
 	if !ok {
 		return defaults

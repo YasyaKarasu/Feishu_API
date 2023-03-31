@@ -15,7 +15,7 @@ type RobotInfo struct {
 	OpenId string
 }
 
-func NewRobotInfo(data map[string]interface{}) *RobotInfo {
+func NewRobotInfo(data map[string]any) *RobotInfo {
 	return &RobotInfo{
 		Name:   data["app_name"].(string),
 		OpenId: data["open_id"].(string),
@@ -89,9 +89,9 @@ func (c AppClient) RobotGetInfo() *RobotInfo {
 		return nil
 	}
 
-	var result map[string]interface{}
+	var result map[string]any
 
 	json.Unmarshal(respBody, &result)
 
-	return NewRobotInfo(result["bot"].(map[string]interface{}))
+	return NewRobotInfo(result["bot"].(map[string]any))
 }

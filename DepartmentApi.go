@@ -9,8 +9,8 @@ type DepartmentInfo struct {
 }
 
 // Create a new DepartmentInfo
-func NewDepartmentInfo(data map[string]interface{}) *DepartmentInfo {
-	dept := data["department"].(map[string]interface{})
+func NewDepartmentInfo(data map[string]any) *DepartmentInfo {
+	dept := data["department"].(map[string]any)
 	return &DepartmentInfo{
 		Name:        dept["name"].(string),
 		GroupId:     dept["chat_id"].(string),

@@ -53,7 +53,7 @@ type VCReserve struct {
 	URL       string
 }
 
-func NewVCReserve(data map[string]interface{}) *VCReserve {
+func NewVCReserve(data map[string]any) *VCReserve {
 	return &VCReserve{
 		Id:        data["id"].(string),
 		MeetingNo: data["meeting_no"].(string),
@@ -62,7 +62,7 @@ func NewVCReserve(data map[string]interface{}) *VCReserve {
 }
 
 func (c AppClient) VCReserve(reserveRequest *VCReserveRequest) *VCReserve {
-	body := make(map[string]interface{})
+	body := make(map[string]any)
 	struct2map(reserveRequest, &body)
 
 	info := c.Request("post", "/open-apis/vc/v1/reserves/apply", nil, nil, body)

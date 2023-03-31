@@ -173,6 +173,15 @@ type FieldStaff struct {
 	Name string `json:"name,omitempty"`
 }
 
+func NewCreatedRecordInfo(AppToken string, TableId string, data map[string]any) *RecordInfo {
+	return &RecordInfo{
+		AppToken: AppToken,
+		TableId:  TableId,
+		RecordId: data["record_id"].(string),
+		Fields:   data["fields"].(map[string]any),
+	}
+}
+
 // Create a record in bitable
 func (c AppClient) DocumentCreateRecord(AppToken string, TableId string, Fields map[string]any) *RecordInfo {
 	body := make(map[string]any)
@@ -181,7 +190,7 @@ func (c AppClient) DocumentCreateRecord(AppToken string, TableId string, Fields 
 	resp := c.Request("post", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records", nil, nil, body)
 	logrus.Debug("Created a record: ", resp)
 
-	return NewRecordInfo(AppToken, TableId, resp["record"].(map[string]any))
+	return NewCreatedRecordInfo(AppToken, TableId, resp["record"].(map[string]any))
 }
 
 // Update a record in bitable

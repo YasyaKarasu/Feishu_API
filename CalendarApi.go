@@ -60,7 +60,7 @@ func (c AppClient) CalendarCreateByUser(calendar *CalendarCreateRequest, user_ac
 	body := make(map[string]any)
 	struct2map(calendar, &body)
 
-	info := c.Request("post", "open-apis/calendar/v4/calendars", nil, nil, body)
+	info := c.Request("post", "open-apis/calendar/v4/calendars", nil, headers, body)
 	return NewCalendar(info["calendar"].(map[string]any))
 }
 

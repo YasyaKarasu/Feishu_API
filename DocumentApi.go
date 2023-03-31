@@ -146,7 +146,7 @@ func (c AppClient) DocumentGetRecord(AppToken string, TableId string, RecordId s
 		return nil
 	}
 
-	return NewRecordInfo(AppToken, TableId, record)
+	return NewRecordInfo(AppToken, TableId, record["record"].(map[string]any))
 }
 
 func (c AppClient) DocumentGetRecordWithoutModifiedTime(AppToken string, TableId string, RecordId string) *RecordInfo {
@@ -163,7 +163,7 @@ func (c AppClient) DocumentGetRecordWithoutModifiedTime(AppToken string, TableId
 		return nil
 	}
 
-	return NewRecordInfoWithoutModifiedTime(AppToken, TableId, record)
+	return NewRecordInfoWithoutModifiedTime(AppToken, TableId, record["record"].(map[string]any))
 }
 
 // Get a []Byte form Record by AppToken, TableId and RecordId

@@ -135,6 +135,11 @@ func (c AppClient) CalendarEventCreate(calendarId string, calendarEvent *Calenda
 	return NewCalendarEvent(info["event"].(map[string]any))
 }
 
+func (c AppClient) CalendarEventQuery(calendarId string, eventId string) *CalendarEvent {
+	info := c.Request("get", "open-apis/calendar/v4/calendars/"+calendarId+"/events/"+eventId, nil, nil, nil)
+	return NewCalendarEvent(info["event"].(map[string]any))
+}
+
 func (c AppClient) CalendarEventList(calendarId string) []CalendarEvent {
 	query := make(map[string]string)
 	query["anchor_time"] = strconv.FormatInt(time.Now().Unix(), 10)

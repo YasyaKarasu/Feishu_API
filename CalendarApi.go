@@ -60,3 +60,10 @@ func (c AppClient) CalendarCreate(calendar *CalendarCreateRequest) *Calendar {
 	info := c.Request("post", "open-apis/calendar/v4/calendars", nil, nil, body)
 	return NewCalendar(info["calendar"].(map[string]any))
 }
+
+func (c AppClient) CalendarSubscribe(calendarId string, user_access_token string) {
+	headers := make(map[string]string)
+	headers["Authorization"] = user_access_token
+
+	c.Request("post", "open-apis/calendar/v4/calendars/"+calendarId+"/subscribe", nil, headers, nil)
+}

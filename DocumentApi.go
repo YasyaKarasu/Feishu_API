@@ -99,6 +99,15 @@ func NewRecordInfo(AppToken string, TableId string, data map[string]any) *Record
 	}
 }
 
+func NewRecordInfoWithoutModifiedTime(AppToken string, TableId string, data map[string]any) *RecordInfo {
+	return &RecordInfo{
+		AppToken: AppToken,
+		TableId:  TableId,
+		RecordId: data["record_id"].(string),
+		Fields:   data["fields"].(map[string]any),
+	}
+}
+
 // Get all Records by AppToken and TableId
 func (c AppClient) DocumentGetAllRecords(AppToken string, TableId string) []RecordInfo {
 	var all_records []RecordInfo
@@ -140,6 +149,23 @@ func (c AppClient) DocumentGetRecord(AppToken string, TableId string, RecordId s
 	return NewRecordInfo(AppToken, TableId, record)
 }
 
+func (c AppClient) DocumentGetRecordWithoutModifiedTime(AppToken string, TableId string, RecordId string) *RecordInfo {
+	query := make(map[string]string)
+	query["automatic_fields"] = "true"
+	record := c.Request("get", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records/"+RecordId, query, nil, nil)
+
+	if record == nil {
+		logrus.WithFields(logrus.Fields{
+			"AppToken": AppToken,
+			"TableID":  TableId,
+			"RecordID": RecordId,
+		}).Warn("nil record info return")
+		return nil
+	}
+
+	return NewRecordInfoWithoutModifiedTime(AppToken, TableId, record)
+}
+
 // Get a []Byte form Record by AppToken, TableId and RecordId
 func (c AppClient) DocumentGetRecordInByte(AppToken string, TableId string, RecordId string) []byte {
 	client := &http.Client{}
@@ -173,15 +199,6 @@ type FieldStaff struct {
 	Name string `json:"name,omitempty"`
 }
 
-func NewCreatedRecordInfo(AppToken string, TableId string, data map[string]any) *RecordInfo {
-	return &RecordInfo{
-		AppToken: AppToken,
-		TableId:  TableId,
-		RecordId: data["record_id"].(string),
-		Fields:   data["fields"].(map[string]any),
-	}
-}
-
 // Create a record in bitable
 func (c AppClient) DocumentCreateRecord(AppToken string, TableId string, Fields map[string]any) *RecordInfo {
 	body := make(map[string]any)
@@ -190,7 +207,7 @@ func (c AppClient) DocumentCreateRecord(AppToken string, TableId string, Fields 
 	resp := c.Request("post", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records", nil, nil, body)
 	logrus.Debug("Created a record: ", resp)
 
-	return NewCreatedRecordInfo(AppToken, TableId, resp["record"].(map[string]any))
+	return NewRecordInfoWithoutModifiedTime(AppToken, TableId, resp["record"].(map[string]any))
 }
 
 // Update a record in bitable

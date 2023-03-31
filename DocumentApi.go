@@ -169,26 +169,22 @@ func (c AppClient) DocumentGetRecordInByte(AppToken string, TableId string, Reco
 }
 
 // Create a record in bitable
-func (c AppClient) DocumentCreateRecord(AppToken string, TableId string, Fields map[string]interface{}) bool {
-	query := make(map[string]string)
-	query["user_id_type"] = "open_id"
-	body := make(map[string]interface{})
+func (c AppClient) DocumentCreateRecord(AppToken string, TableId string, Fields map[string]any) bool {
+	body := make(map[string]any)
 	body["fields"] = Fields
 
-	resp := c.Request("post", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records", query, nil, body)
+	resp := c.Request("post", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records", nil, nil, body)
 	logrus.Debug("Created a record: ", resp)
 
 	return true
 }
 
 // Update a record in bitable
-func (c AppClient) DocumentUpdateRecord(AppToken string, TableId string, RecordId string, Fields map[string]interface{}) bool {
-	query := make(map[string]string)
-	query["user_id_type"] = "open_id"
-	body := make(map[string]interface{})
+func (c AppClient) DocumentUpdateRecord(AppToken string, TableId string, RecordId string, Fields map[string]any) bool {
+	body := make(map[string]any)
 	body["fields"] = Fields
 
-	resp := c.Request("put", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records/"+RecordId, query, nil, body)
+	resp := c.Request("put", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records/"+RecordId, nil, nil, body)
 	logrus.Debug("Updated record "+RecordId+": ", resp)
 
 	return true
@@ -196,7 +192,7 @@ func (c AppClient) DocumentUpdateRecord(AppToken string, TableId string, RecordI
 
 // Deleta records in bitable
 func (c AppClient) DocumentDeleteRecords(AppToken string, TableId string, RecordIds []string) bool {
-	body := make(map[string]interface{})
+	body := make(map[string]any)
 	body["records"] = RecordIds
 
 	resp := c.Request("put", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records/batch_delete", nil, nil, body)

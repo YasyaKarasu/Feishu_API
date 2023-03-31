@@ -53,7 +53,10 @@ func NewCalendar(data map[string]any) *Calendar {
 	}
 }
 
-func (c AppClient) CalendarCreate(calendar *CalendarCreateRequest) *Calendar {
+func (c AppClient) CalendarCreateByUser(calendar *CalendarCreateRequest, user_access_token string) *Calendar {
+	headers := make(map[string]string)
+	headers["Authorization"] = user_access_token
+
 	body := make(map[string]any)
 	struct2map(calendar, &body)
 
@@ -61,9 +64,21 @@ func (c AppClient) CalendarCreate(calendar *CalendarCreateRequest) *Calendar {
 	return NewCalendar(info["calendar"].(map[string]any))
 }
 
-func (c AppClient) CalendarSubscribe(calendarId string, user_access_token string) {
+func (c AppClient) CalendarCreateByBot(calendar *CalendarCreateRequest) *Calendar {
+	body := make(map[string]any)
+	struct2map(calendar, &body)
+
+	info := c.Request("post", "open-apis/calendar/v4/calendars", nil, nil, body)
+	return NewCalendar(info["calendar"].(map[string]any))
+}
+
+func (c AppClient) CalendarSubscribeByUser(calendarId string, user_access_token string) {
 	headers := make(map[string]string)
 	headers["Authorization"] = user_access_token
 
 	c.Request("post", "open-apis/calendar/v4/calendars/"+calendarId+"/subscribe", nil, headers, nil)
+}
+
+func (c AppClient) CalendarSubscribeByBot(calendarId string) {
+	c.Request("post", "open-apis/calendar/v4/calendars/"+calendarId+"/subscribe", nil, nil, nil)
 }

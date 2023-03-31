@@ -118,12 +118,11 @@ type CalendarEvent struct {
 }
 
 func NewCalendarEvent(data map[string]interface{}) *CalendarEvent {
-	event := data["event"].(map[string]interface{})
 	eventInfo := CalendarEventCreateRequest{}
-	map2struct(event, &eventInfo)
+	map2struct(data, &eventInfo)
 	return &CalendarEvent{
-		Id:                  event["event_id"].(string),
-		OrganizerCalendarId: event["organizer_calendar_id"].(string),
+		Id:                  data["event_id"].(string),
+		OrganizerCalendarId: data["organizer_calendar_id"].(string),
 		EventInfo:           eventInfo,
 	}
 }
@@ -133,7 +132,19 @@ func (c AppClient) CalendarEventCreate(calendarId string, calendarEvent *Calenda
 	struct2map(calendarEvent, &body)
 
 	info := c.Request("post", "open-apis/calendar/v4/calendars/"+calendarId+"/events", nil, nil, body)
-	return NewCalendarEvent(info)
+	return NewCalendarEvent(info["event"].(map[string]interface{}))
+}
+
+func (c AppClient) CalendarEventList(calendarId string) []CalendarEvent {
+	query := make(map[string]string)
+	query["anchor_time"] = strconv.FormatInt(time.Now().Unix(), 10)
+
+	events := c.GetAllPages("get", "open-apis/calendar/v4/calendars/"+calendarId+"/events", query, nil, nil, 100)
+	var calendarEvents []CalendarEvent
+	for _, event := range events {
+		calendarEvents = append(calendarEvents, *NewCalendarEvent(event.(map[string]interface{})))
+	}
+	return calendarEvents
 }
 
 type CalendarEventAttendeeType string

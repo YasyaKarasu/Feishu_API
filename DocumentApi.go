@@ -174,14 +174,14 @@ type FieldStaff struct {
 }
 
 // Create a record in bitable
-func (c AppClient) DocumentCreateRecord(AppToken string, TableId string, Fields map[string]any) bool {
+func (c AppClient) DocumentCreateRecord(AppToken string, TableId string, Fields map[string]any) *RecordInfo {
 	body := make(map[string]any)
 	body["fields"] = Fields
 
 	resp := c.Request("post", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records", nil, nil, body)
 	logrus.Debug("Created a record: ", resp)
 
-	return true
+	return NewRecordInfo(AppToken, TableId, resp["record"].(map[string]any))
 }
 
 // Update a record in bitable

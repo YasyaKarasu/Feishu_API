@@ -168,6 +168,11 @@ func (c AppClient) DocumentGetRecordInByte(AppToken string, TableId string, Reco
 	return body
 }
 
+type FieldStaff struct {
+	ID   string `json:"id,omitempty"`
+	Name string `json:"name,omitempty"`
+}
+
 // Create a record in bitable
 func (c AppClient) DocumentCreateRecord(AppToken string, TableId string, Fields map[string]any) bool {
 	body := make(map[string]any)
@@ -206,9 +211,4 @@ func (c AppClient) DocumentGetRawContent(DocumentId string) string {
 	content := resp["content"].(string)
 
 	return content
-}
-
-type FieldStaff struct {
-	ID   string `json:"id,omitempty"`
-	Name string `json:"name,omitempty"`
 }

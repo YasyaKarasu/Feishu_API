@@ -168,6 +168,39 @@ func (c AppClient) DocumentGetRecordInByte(AppToken string, TableId string, Reco
 	return body
 }
 
+// Create a record in bitable
+func (c AppClient) DocumentCreateRecord(AppToken string, TableId string, Fields map[string]any) bool {
+	body := make(map[string]any)
+	body["fields"] = Fields
+
+	resp := c.Request("post", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records", nil, nil, body)
+	logrus.Debug("Created a record: ", resp)
+
+	return true
+}
+
+// Update a record in bitable
+func (c AppClient) DocumentUpdateRecord(AppToken string, TableId string, RecordId string, Fields map[string]any) bool {
+	body := make(map[string]any)
+	body["fields"] = Fields
+
+	resp := c.Request("put", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records/"+RecordId, nil, nil, body)
+	logrus.Debug("Updated record "+RecordId+": ", resp)
+
+	return true
+}
+
+// Deleta records in bitable
+func (c AppClient) DocumentDeleteRecords(AppToken string, TableId string, RecordIds []string) bool {
+	body := make(map[string]any)
+	body["records"] = RecordIds
+
+	resp := c.Request("put", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records/batch_delete", nil, nil, body)
+	logrus.Debug("Deleted records : ", RecordIds, resp)
+
+	return true
+}
+
 func (c AppClient) DocumentGetRawContent(DocumentId string) string {
 	resp := c.Request("get", "open-apis/docx/v1/documents/"+DocumentId+"/raw_content", nil, nil, nil)
 	content := resp["content"].(string)
@@ -178,12 +211,4 @@ func (c AppClient) DocumentGetRawContent(DocumentId string) string {
 type FieldStaff struct {
 	ID   string `json:"id,omitempty"`
 	Name string `json:"name,omitempty"`
-}
-
-func (c AppClient) DocumentCreateRecord(AppToken string, TableId string, Fields map[string]any) {
-	c.Request("post", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records", nil, nil, Fields)
-}
-
-func (c AppClient) DocumentUpdateRecord(AppToken string, TableId string, RecordId string, Fields map[string]any) {
-	c.Request("put", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records/"+RecordId, nil, nil, Fields)
 }

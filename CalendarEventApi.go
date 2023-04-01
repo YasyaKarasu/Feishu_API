@@ -243,12 +243,20 @@ func (c AppClient) CalendarEventAttendeeQuery(calendarId string, eventId string,
 	return attendees
 }
 
-func struct2map(s any, m any) {
-	bytes, _ := json.Marshal(s)
-	json.Unmarshal(bytes, m)
+func struct2map(s any, m any) error {
+	bytes, err := json.Marshal(s)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(bytes, m)
+	return err
 }
 
-func map2struct(m map[string]any, s any) {
-	bytes, _ := json.Marshal(m)
-	json.Unmarshal(bytes, s)
+func map2struct(m map[string]any, s any) error {
+	bytes, err := json.Marshal(m)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(bytes, s)
+	return err
 }

@@ -1076,6 +1076,10 @@ func (button *MessageCardButton) Build() *MessageCardButton {
 	return button
 }
 
+func (button *MessageCardButton) Tag() string {
+	return "button"
+}
+
 func (button *MessageCardButton) MarshalJSON() ([]byte, error) {
 	if button.Text == nil {
 		return nil, errors.New("text is required")
@@ -1083,7 +1087,7 @@ func (button *MessageCardButton) MarshalJSON() ([]byte, error) {
 	if button.URL != nil && button.MultiURL != nil {
 		return nil, errors.New("url and multi_url can not be set at the same time")
 	}
-	return json.Marshal(button)
+	return messageCardElementJSON(button)
 }
 
 func (button *MessageCardButton) IsAction() {}

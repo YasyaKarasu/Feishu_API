@@ -42,15 +42,11 @@ func (card *MessageCard) Build() *MessageCard {
 }
 
 func (card *MessageCard) String() (string, error) {
+	if len(card.Elements) == 0 {
+		return "", errors.New("elements is required")
+	}
 	data, err := json.Marshal(card)
 	return string(data), err
-}
-
-func (card *MessageCard) MarshalJSON() ([]byte, error) {
-	if len(card.Elements) == 0 {
-		return nil, errors.New("elements is required")
-	}
-	return json.Marshal(card)
 }
 
 type MessageCardConfig struct {

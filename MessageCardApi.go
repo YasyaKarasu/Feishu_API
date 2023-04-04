@@ -3,13 +3,10 @@ package feishuapi
 import (
 	"encoding/json"
 	"errors"
-
-	"github.com/fatih/structs"
+	"fmt"
+	"reflect"
+	"strings"
 )
-
-func init() {
-	structs.DefaultTagName = "json"
-}
 
 type MessageCard struct {
 	Config   *MessageCardConfig   `json:"config,omitempty"`
@@ -119,7 +116,10 @@ type MessageCardElement interface {
 }
 
 func messageCardElementJSON(element MessageCardElement) ([]byte, error) {
-	data := structs.Map(element)
+	data, err := struct2mapByReflect(element)
+	if err != nil {
+		return nil, err
+	}
 	data["tag"] = element.Tag()
 	return json.Marshal(data)
 }
@@ -130,7 +130,7 @@ type MessageCardText interface {
 }
 
 type MessageCardPlainText struct {
-	Content string `json:"content"`
+	Content string `json:"content,omitempty"`
 	Lines   *int   `json:"lines,omitempty"`
 }
 
@@ -165,7 +165,7 @@ func (plainText *MessageCardPlainText) IsText() {}
 func (plainText *MessageCardPlainText) IsNote() {}
 
 type MessageCardLarkMarkdown struct {
-	Content string `json:"content"`
+	Content string `json:"content,omitempty"`
 }
 
 func NewMessageCardLarkMarkdown() *MessageCardLarkMarkdown {
@@ -406,7 +406,7 @@ const (
 )
 
 type MessageCardMarkdown struct {
-	Content   string                        `json:"content"`
+	Content   string                        `json:"content,omitempty"`
 	TextAlign *MessageCardMarkdownTextAlign `json:"text_align,omitempty"`
 	Href      map[string]*MessageCardURL    `json:"href,omitempty"`
 }
@@ -1134,4 +1134,86 @@ func (cardLink *MessageCardLink) MarshalJSON() ([]byte, error) {
 		return nil, errors.New("url is required")
 	}
 	return json.Marshal(cardLink)
+}
+
+func struct2mapByReflect(val interface{}) (map[string]interface{}, error) {
+	m := make(map[string]interface{})
+	s := reflect.Indirect(reflect.ValueOf(val))
+	st := s.Type()
+	for i := 0; i < s.NumField(); i++ {
+		fieldDesc := st.Field(i)
+		fieldVal := s.Field(i)
+		if fieldDesc.Anonymous {
+			embeddedMap, err := struct2mapByReflect(fieldVal.Interface())
+			if err != nil {
+				return nil, err
+			}
+			for k, v := range embeddedMap {
+				m[k] = v
+			}
+			continue
+		}
+		jsonTag := fieldDesc.Tag.Get("json")
+		if jsonTag == "" {
+			continue
+		}
+		tag, err := parseJSONTag(jsonTag)
+		if err != nil {
+			return nil, err
+		}
+		if tag.ignore {
+			continue
+		}
+		if fieldDesc.Type.Kind() == reflect.Ptr && fieldVal.IsNil() {
+			continue
+		}
+		// nil maps are treated as empty maps.
+		if fieldDesc.Type.Kind() == reflect.Map && fieldVal.IsNil() {
+			continue
+		}
+		if fieldDesc.Type.Kind() == reflect.Slice && fieldVal.IsNil() {
+			continue
+		}
+		if tag.stringFormat {
+			m[tag.name] = formatAsString(fieldVal, fieldDesc.Type.Kind())
+		} else {
+			m[tag.name] = fieldVal.Interface()
+		}
+	}
+	return m, nil
+}
+
+func formatAsString(v reflect.Value, kind reflect.Kind) string {
+	if kind == reflect.Ptr && !v.IsNil() {
+		v = v.Elem()
+	}
+	return fmt.Sprintf("%v", v.Interface())
+}
+
+type jsonTag struct {
+	name         string
+	stringFormat bool
+	ignore       bool
+}
+
+func parseJSONTag(val string) (jsonTag, error) {
+	if val == "-" {
+		return jsonTag{ignore: true}, nil
+	}
+	var tag jsonTag
+	i := strings.Index(val, ",")
+	if i == -1 || val[:i] == "" {
+		return tag, fmt.Errorf("malformed json tag: %s", val)
+	}
+	tag = jsonTag{
+		name: val[:i],
+	}
+	switch val[i+1:] {
+	case "omitempty":
+	case "omitempty,string":
+		tag.stringFormat = true
+	default:
+		return tag, fmt.Errorf("malformed json tag: %s", val)
+	}
+	return tag, nil
 }

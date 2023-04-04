@@ -3,7 +3,13 @@ package feishuapi
 import (
 	"encoding/json"
 	"errors"
+
+	"github.com/fatih/structs"
 )
+
+func init() {
+	structs.DefaultTagName = "json"
+}
 
 type MessageCard struct {
 	Config   *MessageCardConfig   `json:"config,omitempty"`
@@ -117,11 +123,7 @@ type MessageCardElement interface {
 }
 
 func messageCardElementJSON(element MessageCardElement) ([]byte, error) {
-	data := make(map[string]any)
-	err := struct2map(element, &data)
-	if err != nil {
-		return nil, err
-	}
+	data := structs.Map(element)
 	data["tag"] = element.Tag()
 	return json.Marshal(data)
 }

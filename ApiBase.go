@@ -263,6 +263,9 @@ func (c AppClient) GetAllPages(method string, path string, query map[string]stri
 		if len(resp) == 0 {
 			return nil
 		}
+		if resp["items"] == nil {
+			return []any{}
+		}
 
 		l := resp["items"].([]any)
 		has_more = resp["has_more"].(bool)

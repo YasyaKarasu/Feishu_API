@@ -323,26 +323,26 @@ func (column *MessageCardColumn) MarshalJSON() ([]byte, error) {
 }
 
 type MessageCardDiv struct {
-	Text   *MessageCardText   `json:"text,omitempty"`
-	Fields []MessageCardField `json:"fields,omitempty"`
-	Extra  *MessageCardExtra  `json:"extra,omitempty"`
+	Text   MessageCardText     `json:"text,omitempty"`
+	Fields []*MessageCardField `json:"fields,omitempty"`
+	Extra  MessageCardExtra    `json:"extra,omitempty"`
 }
 
 func NewMessageCardDiv() *MessageCardDiv {
 	return &MessageCardDiv{}
 }
 
-func (div *MessageCardDiv) WithText(text *MessageCardText) *MessageCardDiv {
+func (div *MessageCardDiv) WithText(text MessageCardText) *MessageCardDiv {
 	div.Text = text
 	return div
 }
 
-func (div *MessageCardDiv) WithFields(fields []MessageCardField) *MessageCardDiv {
+func (div *MessageCardDiv) WithFields(fields []*MessageCardField) *MessageCardDiv {
 	div.Fields = fields
 	return div
 }
 
-func (div *MessageCardDiv) WithExtra(extra *MessageCardExtra) *MessageCardDiv {
+func (div *MessageCardDiv) WithExtra(extra MessageCardExtra) *MessageCardDiv {
 	div.Extra = extra
 	return div
 }
@@ -363,8 +363,8 @@ func (div *MessageCardDiv) MarshalJSON() ([]byte, error) {
 }
 
 type MessageCardField struct {
-	IsShort *bool            `json:"is_short,omitempty"`
-	Text    *MessageCardText `json:"text,omitempty"`
+	IsShort *bool           `json:"is_short,omitempty"`
+	Text    MessageCardText `json:"text,omitempty"`
 }
 
 func NewMessageCardField() *MessageCardField {
@@ -376,7 +376,7 @@ func (field *MessageCardField) WithIsShort(isShort bool) *MessageCardField {
 	return field
 }
 
-func (field *MessageCardField) WithText(text *MessageCardText) *MessageCardField {
+func (field *MessageCardField) WithText(text MessageCardText) *MessageCardField {
 	field.Text = text
 	return field
 }
@@ -522,7 +522,7 @@ const (
 type MessageCardImage struct {
 	ImageKey     *string               `json:"img_key,omitempty"`
 	Alt          *MessageCardPlainText `json:"alt,omitempty"`
-	Title        *MessageCardText      `json:"title,omitempty"`
+	Title        MessageCardText       `json:"title,omitempty"`
 	CustomWidth  *int                  `json:"custom_width,omitempty"`
 	CompactWidth *bool                 `json:"compact_width,omitempty"`
 	Mode         *MessageCardImageMode `json:"mode,omitempty"`
@@ -543,7 +543,7 @@ func (image *MessageCardImage) WithAlt(alt *MessageCardPlainText) *MessageCardIm
 	return image
 }
 
-func (image *MessageCardImage) WithTitle(title *MessageCardText) *MessageCardImage {
+func (image *MessageCardImage) WithTitle(title MessageCardText) *MessageCardImage {
 	image.Title = title
 	return image
 }
@@ -1030,7 +1030,7 @@ const (
 )
 
 type MessageCardButton struct {
-	Text     *MessageCardText       `json:"text,omitempty"`
+	Text     MessageCardText        `json:"text,omitempty"`
 	URL      *string                `json:"url,omitempty"`
 	MultiURL *MessageCardURL        `json:"multi_url,omitempty"`
 	Type     *MessageCardButtonType `json:"type,omitempty"`
@@ -1042,7 +1042,7 @@ func NewMessageCardButton() *MessageCardButton {
 	return &MessageCardButton{}
 }
 
-func (button *MessageCardButton) WithText(text *MessageCardText) *MessageCardButton {
+func (button *MessageCardButton) WithText(text MessageCardText) *MessageCardButton {
 	button.Text = text
 	return button
 }

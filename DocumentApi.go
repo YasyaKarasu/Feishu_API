@@ -242,42 +242,42 @@ type TextStyle struct {
 }
 
 type TextElement struct {
-	TextRun struct {
-		Content          string `json:"content"`
-		TextElementStyle struct {
-			Bold            bool `json:"bold"`
-			Italic          bool `json:"italic"`
-			Strikethrough   bool `json:"strikethrough"`
-			Underline       bool `json:"underline"`
-			InlineCode      bool `json:"inline_code"`
-			BackgroundColor int  `json:"background_color"`
-			TextColor       int  `json:"text_color"`
-			Link            struct {
-				URL string `json:"url"`
-			} `json:"link"`
-		} `json:"text_element_style"`
-	} `json:"text_run"`
-	MentionUser struct {
-		UserID string `json:"user_id"`
-	} `json:"mention_user"`
-	MentionDoc struct {
-		Token   string `json:"token"`
-		ObjType int    `json:"obj_type"`
-		Title   string `json:"title"`
-	} `json:"mention_doc"`
+	TextRun *struct {
+		Content          *string `json:"content,omitempty"`
+		TextElementStyle *struct {
+			Bold            *bool `json:"bold,omitempty"`
+			Italic          *bool `json:"italic,omitempty"`
+			Strikethrough   *bool `json:"strikethrough,omitempty"`
+			Underline       *bool `json:"underline,omitempty"`
+			InlineCode      *bool `json:"inline_code,omitempty"`
+			BackgroundColor *int  `json:"background_color,omitempty"`
+			TextColor       *int  `json:"text_color,omitempty"`
+			Link            *struct {
+				URL *string `json:"url,omitempty"`
+			} `json:"link,omitempty"`
+		} `json:"text_element_style,omitempty"`
+	} `json:"text_run,omitempty"`
+	MentionUser *struct {
+		UserID *string `json:"user_id,omitempty"`
+	} `json:"mention_user,omitempty"`
+	MentionDoc *struct {
+		Token   *string `json:"token,omitempty"`
+		ObjType *int    `json:"obj_type,omitempty"`
+		Title   *string `json:"title,omitempty"`
+	} `json:"mention_doc,omitempty"`
 }
 
 type BlockText struct {
-	Style    *TextStyle    `json:"style"`
-	Elements []TextElement `json:"elements"`
+	Style    *TextStyle    `json:"style,omitempty"`
+	Elements []TextElement `json:"elements,omitempty"`
 }
 
 type BlockTextElementsUpdate struct {
-	Elements []TextElement `json:"elements"`
+	Elements []TextElement `json:"elements,omitempty"`
 }
 
 type BlockUpdate struct {
-	UpdateTextElements *BlockTextElementsUpdate `json:"update_text_elements"`
+	UpdateTextElements *BlockTextElementsUpdate `json:"update_text_elements,omitempty"`
 }
 
 type BlockInfo struct {

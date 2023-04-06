@@ -385,13 +385,6 @@ func (field *MessageCardField) Build() *MessageCardField {
 	return field
 }
 
-func (field *MessageCardField) MarshalJSON() ([]byte, error) {
-	if field.Text == nil {
-		return nil, errors.New("text is required")
-	}
-	return json.Marshal(field)
-}
-
 type MessageCardExtra interface {
 	MessageCardElement
 	IsExtra()
@@ -474,13 +467,6 @@ func (url *MessageCardURL) WithPCURL(pcURL string) *MessageCardURL {
 }
 
 func (url *MessageCardURL) Build() *MessageCardURL {
-	return url
-}
-
-func (url *MessageCardURL) MarshalJSON() ([]byte, error) {
-	if url.URL == nil {
-		return nil, errors.New("url is required")
-	}
 	if url.AndroidURL == nil {
 		url.AndroidURL = url.URL
 	}
@@ -490,7 +476,7 @@ func (url *MessageCardURL) MarshalJSON() ([]byte, error) {
 	if url.PCURL == nil {
 		url.PCURL = url.URL
 	}
-	return json.Marshal(url)
+	return url
 }
 
 type MessageCardHr struct {
@@ -816,16 +802,6 @@ func (confirm *MessageCardConfirm) Build() *MessageCardConfirm {
 	return confirm
 }
 
-func (confirm *MessageCardConfirm) MarshalJSON() ([]byte, error) {
-	if confirm.Title == nil {
-		return nil, errors.New("title is required")
-	}
-	if confirm.Text == nil {
-		return nil, errors.New("text is required")
-	}
-	return json.Marshal(confirm)
-}
-
 type MessageCardOverflow struct {
 	Options []MessageCardOption    `json:"options,omitempty"`
 	Value   map[string]interface{} `json:"value,omitempty"`
@@ -908,13 +884,6 @@ func (option *MessageCardOption) WithMultiURL(multiURL *MessageCardURL) *Message
 
 func (option *MessageCardOption) Build() *MessageCardOption {
 	return option
-}
-
-func (option *MessageCardOption) MarshalJSON() ([]byte, error) {
-	if option.URL != nil && option.MultiURL != nil {
-		return nil, errors.New("url and multi_url can not be set at the same time")
-	}
-	return json.Marshal(option)
 }
 
 type MessageCardSelectMenuBase struct {
@@ -1127,13 +1096,6 @@ func (cardLink *MessageCardLink) WithPCURL(pcURL string) *MessageCardLink {
 
 func (cardLink *MessageCardLink) Build() *MessageCardLink {
 	return cardLink
-}
-
-func (cardLink *MessageCardLink) MarshalJSON() ([]byte, error) {
-	if cardLink.URL == nil {
-		return nil, errors.New("url is required")
-	}
-	return json.Marshal(cardLink)
 }
 
 func struct2mapByReflect(val interface{}) (map[string]interface{}, error) {

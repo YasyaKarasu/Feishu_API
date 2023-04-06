@@ -1,6 +1,7 @@
 package feishuapi
 
 import (
+	"encoding/json"
 	"io"
 	"net/http"
 	"strings"
@@ -230,6 +231,80 @@ func (c AppClient) DocumentDeleteRecords(AppToken string, TableId string, Record
 	logrus.Debug("Deleted records : ", RecordIds, resp)
 
 	return true
+}
+
+type TextStyle struct {
+	Align    int  `json:"align"`
+	Done     bool `json:"done"`
+	Folded   bool `json:"folded"`
+	Language int  `json:"language"`
+	Wrap     bool `json:"wrap"`
+}
+
+type TextElement struct {
+	TextRun struct {
+		Content          string `json:"content"`
+		TextElementStyle struct {
+			Bold            bool `json:"bold"`
+			Italic          bool `json:"italic"`
+			Strikethrough   bool `json:"strikethrough"`
+			Underline       bool `json:"underline"`
+			InlineCode      bool `json:"inline_code"`
+			BackgroundColor int  `json:"background_color"`
+			TextColor       int  `json:"text_color"`
+			Link            struct {
+				URL string `json:"url"`
+			} `json:"link"`
+		} `json:"text_element_style"`
+	} `json:"text_run"`
+	MentionUser struct {
+		UserID string `json:"user_id"`
+	} `json:"mention_user"`
+	MentionDoc struct {
+		Token   string `json:"token"`
+		ObjType int    `json:"obj_type"`
+		Title   string `json:"title"`
+	} `json:"mention_doc"`
+}
+
+type BlockText struct {
+	Style    *TextStyle    `json:"style"`
+	Elements []TextElement `json:"elements"`
+}
+
+type BlockTextElementsUpdate struct {
+	Elements []TextElement `json:"elements"`
+}
+
+type BlockUpdate struct {
+	UpdateTextElements *BlockTextElementsUpdate `json:"update_text_elements"`
+}
+
+type BlockInfo struct {
+	BlockId   string     `json:"block_id"`
+	BlockType int        `json:"block_type"`
+	Text      *BlockText `json:"text"`
+}
+
+func (c AppClient) DocumentGetAllBlocks(DocumentId string, userIdType UserIdType) []BlockInfo {
+	query := make(map[string]any)
+	query["user_id_type"] = string(userIdType)
+
+	l := c.GetAllPages("get", "open-apis/docx/v1/documents/"+DocumentId+"/blocks", query, nil, nil, 100)
+	b, _ := json.Marshal(l)
+	blocks := make([]BlockInfo, 0)
+	json.Unmarshal(b, &blocks)
+	return blocks
+}
+
+func (c AppClient) DocumentUpdateBlock(DocumentId string, BlockId string, userIdType UserIdType, update *BlockUpdate) {
+	query := make(map[string]any)
+	query["user_id_type"] = string(userIdType)
+
+	body := make(map[string]any)
+	struct2map(update, &body)
+
+	c.Request("patch", "open-apis/docx/v1/documents/"+DocumentId+"/blocks/"+BlockId, query, nil, body)
 }
 
 func (c AppClient) DocumentGetRawContent(DocumentId string) string {

@@ -52,7 +52,7 @@ const (
 
 // Get all employees' information by specific user id type
 func (c AppClient) EmployeeGetAllInfo(id_type UserIdType) []EmployeeInfo {
-	query := make(map[string]string)
+	query := make(map[string]any)
 	query["user_id_type"] = string(id_type)
 	l := c.GetAllPages("get", "open-apis/ehr/v1/employees", query, nil, nil, 100)
 	if l == nil {
@@ -66,4 +66,22 @@ func (c AppClient) EmployeeGetAllInfo(id_type UserIdType) []EmployeeInfo {
 	}
 
 	return all_employees
+}
+
+func (c AppClient) EmployeeGetInfo(id_type UserIdType, id []string) []EmployeeInfo {
+	query := make(map[string]interface{})
+	query["user_id_type"] = string(id_type)
+	query["user_ids"] = id
+	l := c.GetAllPages("get", "open-apis/ehr/v1/employees", query, nil, nil, 100)
+	if l == nil {
+		logrus.Warn("nil employee info return")
+		return nil
+	}
+
+	var employees []EmployeeInfo
+	for _, value := range l {
+		employees = append(employees, *NewEmployeeInfo(value.(map[string]any)))
+	}
+
+	return employees
 }

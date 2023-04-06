@@ -141,7 +141,7 @@ func (c AppClient) CalendarEventQuery(calendarId string, eventId string) *Calend
 }
 
 func (c AppClient) CalendarEventList(calendarId string) []CalendarEvent {
-	query := make(map[string]string)
+	query := make(map[string]any)
 	query["anchor_time"] = strconv.FormatInt(time.Now().Unix(), 10)
 
 	events := c.GetAllPages("get", "open-apis/calendar/v4/calendars/"+calendarId+"/events", query, nil, nil, 100)
@@ -210,7 +210,7 @@ func (c *CalendarEventAttendeeCreateRequest) WithNeedNotification(needNotificati
 }
 
 func (c AppClient) CalendarEventAttendeeCreate(calendarId string, eventId string, userIdType UserIdType, attendee *CalendarEventAttendeeCreateRequest) []CalendarEventAttendee {
-	query := make(map[string]string)
+	query := make(map[string]any)
 	query["user_id_type"] = string(userIdType)
 
 	body := make(map[string]any)
@@ -229,7 +229,7 @@ func (c AppClient) CalendarEventAttendeeCreate(calendarId string, eventId string
 }
 
 func (c AppClient) CalendarEventAttendeeQuery(calendarId string, eventId string, userIdType UserIdType) []CalendarEventAttendee {
-	query := make(map[string]string)
+	query := make(map[string]any)
 	query["user_id_type"] = string(userIdType)
 
 	info := c.GetAllPages("get", "open-apis/calendar/v4/calendars/"+calendarId+"/events/"+eventId+"/attendees", query, nil, nil, 100)

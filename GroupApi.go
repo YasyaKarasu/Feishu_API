@@ -67,7 +67,7 @@ func (c AppClient) GroupGetMembers(groupId string, userIdType UserIdType) []Grou
 
 // CreateGroup Create a new group
 func (c AppClient) GroupCreate(groupName string, userIdType UserIdType, ownerId string) *GroupInfo {
-	query := make(map[string]string)
+	query := make(map[string]any)
 	query["user_id_type"] = string(userIdType)
 	body := make(map[string]string)
 	body["name"] = groupName
@@ -103,7 +103,7 @@ func (c AppClient) GroupGetInfo(chatId string) *GroupInfo {
 // AddMembers
 // app_id to add bot
 func (c AppClient) GroupAddMembers(chatId string, memberIdType UserIdType, succeedType string, idList []string) bool {
-	query := make(map[string]string)
+	query := make(map[string]any)
 	query["member_id_type"] = string(memberIdType)
 	query["succeed_type"] = succeedType
 
@@ -140,7 +140,7 @@ func (c AppClient) GroupAddMembers(chatId string, memberIdType UserIdType, succe
 // DeleteMembers
 // app_id to delete bot
 func (c AppClient) GroupDeleteMembers(chatId string, memberIdType UserIdType, idList []string) bool {
-	query := make(map[string]string)
+	query := make(map[string]any)
 	query["member_id_type"] = string(memberIdType)
 
 	body := make(map[string][]string)
@@ -174,7 +174,7 @@ func (c AppClient) GroupDeleteMembers(chatId string, memberIdType UserIdType, id
 }
 
 func (c AppClient) GroupChangeOwner(chatId string, memberIdType UserIdType, ownerId string) {
-	query := make(map[string]string)
+	query := make(map[string]any)
 	query["user_id_type"] = string(memberIdType)
 
 	body := make(map[string]string)

@@ -112,7 +112,7 @@ func NewRecordInfoWithoutModifiedTime(AppToken string, TableId string, data map[
 func (c AppClient) DocumentGetAllRecords(AppToken string, TableId string) []RecordInfo {
 	var all_records []RecordInfo
 
-	query := make(map[string]string)
+	query := make(map[string]any)
 	query["automatic_fields"] = "true"
 	l := c.GetAllPages("get", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records", query, nil, nil, 100)
 
@@ -133,7 +133,7 @@ func (c AppClient) DocumentGetAllRecords(AppToken string, TableId string) []Reco
 
 // Get A Record by AppToken, TableId and RecordId
 func (c AppClient) DocumentGetRecord(AppToken string, TableId string, RecordId string) *RecordInfo {
-	query := make(map[string]string)
+	query := make(map[string]any)
 	query["automatic_fields"] = "true"
 	record := c.Request("get", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records/"+RecordId, query, nil, nil)
 
@@ -150,7 +150,7 @@ func (c AppClient) DocumentGetRecord(AppToken string, TableId string, RecordId s
 }
 
 func (c AppClient) DocumentGetRecordWithoutModifiedTime(AppToken string, TableId string, RecordId string) *RecordInfo {
-	query := make(map[string]string)
+	query := make(map[string]any)
 	query["automatic_fields"] = "true"
 	record := c.Request("get", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records/"+RecordId, query, nil, nil)
 

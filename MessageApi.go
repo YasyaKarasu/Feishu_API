@@ -25,7 +25,7 @@ const (
 
 // Send a message to a person / chat group, return whether if it had been send successfully
 func (c AppClient) MessageSend(receiveIdType MsgReceiverType, receiveId string, msgType MsgContentType, msg string) (string, bool) {
-	query := make(map[string]string)
+	query := make(map[string]any)
 	query["receive_id_type"] = string(receiveIdType)
 
 	content := ""
@@ -69,7 +69,7 @@ func (c AppClient) MessageSend(receiveIdType MsgReceiverType, receiveId string, 
 	return resp["message_id"].(string), true
 }
 
-func (c AppClient) UpdateMessage(mid string, content string) {
+func (c AppClient) MessageUpdate(mid string, content string) {
 	body := make(map[string]string)
 	body["content"] = content
 

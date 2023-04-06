@@ -11,7 +11,7 @@ type UserInfo struct {
 }
 
 func (c AppClient) UserInfoById(UserId string, IdType UserIdType) *UserInfo {
-	query := make(map[string]string)
+	query := make(map[string]any)
 	query["user_id_type"] = string(IdType)
 	data := c.Request("get", "open-apis/contact/v3/users/"+UserId, query, nil, nil)
 	if data == nil {

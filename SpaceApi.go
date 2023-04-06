@@ -103,7 +103,7 @@ func NewNodeInfo(data map[string]any) *NodeInfo {
 }
 
 func (c AppClient) KnowledgeSpaceGetNodeInfo(NodeToken string) *NodeInfo {
-	query := make(map[string]string)
+	query := make(map[string]any)
 	query["token"] = NodeToken
 
 	info := c.Request("get", "open-apis/wiki/v2/spaces/get_node", query, nil, nil)
@@ -146,7 +146,7 @@ func (c AppClient) KnowledgeSpaceGetAllNodes(SpaceId string, ParentNodeToken ...
 	var l []any
 
 	if len(ParentNodeToken) != 0 {
-		query := make(map[string]string)
+		query := make(map[string]any)
 		query["parent_node_token"] = ParentNodeToken[0]
 		l = c.GetAllPages("get", "open-apis/wiki/v2/spaces/"+SpaceId+"/nodes", query, nil, nil, 10)
 	} else {

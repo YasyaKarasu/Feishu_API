@@ -276,6 +276,10 @@ type BlockTextElementsUpdate struct {
 	Elements []TextElement `json:"elements,omitempty"`
 }
 
+type BlockCreate struct {
+	BlockText *BlockText `json:"text,omitempty"`
+}
+
 type BlockUpdate struct {
 	UpdateTextElements *BlockTextElementsUpdate `json:"update_text_elements,omitempty"`
 }
@@ -295,6 +299,17 @@ func (c AppClient) DocumentGetAllBlocks(DocumentId string, userIdType UserIdType
 	blocks := make([]BlockInfo, 0)
 	json.Unmarshal(b, &blocks)
 	return blocks
+}
+
+func (c AppClient) DocumentCreateBlock(DocumentId string, BlockId string, userIdType UserIdType, block *BlockCreate, index int) {
+	query := make(map[string]any)
+	query["user_id_type"] = string(userIdType)
+
+	body := make(map[string]any)
+	struct2map(block, &body)
+	body["index"] = index
+
+	c.Request("post", "open-apis/docx/v1/documents/"+DocumentId+"/blocks/"+BlockId+"/children", query, nil, body)
 }
 
 func (c AppClient) DocumentUpdateBlock(DocumentId string, BlockId string, userIdType UserIdType, update *BlockUpdate) {

@@ -278,6 +278,7 @@ type BlockTextElementsUpdate struct {
 }
 
 type BlockCreate struct {
+	BlockType int        `json:"block_type"`
 	BlockText *BlockText `json:"text,omitempty"`
 }
 
@@ -302,12 +303,12 @@ func (c AppClient) DocumentGetAllBlocks(DocumentId string, userIdType UserIdType
 	return blocks
 }
 
-func (c AppClient) DocumentCreateBlock(DocumentId string, BlockId string, userIdType UserIdType, block *BlockCreate, index int) {
+func (c AppClient) DocumentCreateBlock(DocumentId string, BlockId string, userIdType UserIdType, blocks []BlockCreate, index int) {
 	query := make(map[string]any)
 	query["user_id_type"] = string(userIdType)
 
 	body := make(map[string]any)
-	struct2map(block, &body)
+	body["children"] = blocks
 	body["index"] = index
 
 	c.Request("post", "open-apis/docx/v1/documents/"+DocumentId+"/blocks/"+BlockId+"/children", query, nil, body)

@@ -263,6 +263,7 @@ type TextElement struct {
 	MentionDoc *struct {
 		Token   *string `json:"token,omitempty"`
 		ObjType *int    `json:"obj_type,omitempty"`
+		URL     *string `json:"url,omitempty"`
 		Title   *string `json:"title,omitempty"`
 	} `json:"mention_doc,omitempty"`
 }

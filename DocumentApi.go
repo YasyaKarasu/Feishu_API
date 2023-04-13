@@ -277,9 +277,15 @@ type BlockTextElementsUpdate struct {
 	Elements []TextElement `json:"elements,omitempty"`
 }
 
+type BlockISV struct {
+	ComponentID     string `json:"component_id"`
+	ComponentTypeID string `json:"component_type_id"`
+}
+
 type BlockCreate struct {
 	BlockType int        `json:"block_type"`
 	BlockText *BlockText `json:"text,omitempty"`
+	BlockISV  *BlockISV  `json:"isv,omitempty"`
 }
 
 type BlockUpdate struct {

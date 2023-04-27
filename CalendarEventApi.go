@@ -11,7 +11,8 @@ type TimeInfo struct {
 }
 
 type VChat struct {
-	VCType string `json:"vc_type"`
+	VCType     string `json:"vc_type"`
+	MeetingUrl string `json:"meeting_url"`
 }
 
 type EventLocation struct {

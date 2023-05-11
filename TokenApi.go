@@ -29,7 +29,7 @@ func NewUserAccessToken(data map[string]any) *UserAccessToken {
 		Access_token:  data["access_token"].(string),
 		Name:          data["name"].(string),
 		Refresh_token: data["refresh_token"].(string),
-		User_id:       data["user_id"].(string),
+		User_id:       getInMap(data, "user_id", "").(string),
 		Open_id:       data["open_id"].(string),
 	}
 }

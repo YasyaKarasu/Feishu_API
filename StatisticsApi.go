@@ -30,7 +30,7 @@ func (c AppClient) StatisticsGetAllInfo(fileToken, fileType string) *FileStatist
 	query := make(map[string]any)
 	query["file_type"] = fileType
 
-	responseMap := c.Request("get", "open-apis/drive/v1/files/"+fileToken+"/responseMap", query, nil, nil)
+	responseMap := c.Request("get", "open-apis/drive/v1/files/"+fileToken+"/statistics", query, nil, nil)
 
 	if responseMap == nil {
 		logrus.WithFields(logrus.Fields{

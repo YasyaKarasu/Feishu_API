@@ -132,6 +132,35 @@ func (c AppClient) DocumentGetAllRecords(AppToken string, TableId string) []Reco
 	return all_records
 }
 
+// DocumentGetAllRecordsWithLinks retrieves all records from a specified table in the Bitable app.
+// It provides an option to include multi-line text fields as []map containing hyperlinks' URLs if available.
+// The purpose of this method is to enable access to hyperlinks within multi-line text fields for specific use cases.
+// Note: Adding the query parameter "text_field_as_array" will change the format of multi-line text fields
+// from string to []map.
+func (c AppClient) DocumentGetAllRecordsWithLinks(AppToken string, TableId string) []RecordInfo {
+	var all_records []RecordInfo
+
+	query := make(map[string]any)
+	query["automatic_fields"] = "true"
+	query["text_field_as_array"] = "true" // Include this query parameter to get multi-line text fields as []map with hyperlinks.
+
+	l := c.GetAllPages("get", "open-apis/bitable/v1/apps/"+AppToken+"/tables/"+TableId+"/records", query, nil, nil, 100)
+
+	if l == nil {
+		logrus.WithFields(logrus.Fields{
+			"AppToken": AppToken,
+			"TableID":  TableId,
+		}).Warn("nil record info return")
+		return nil
+	}
+
+	for _, value := range l {
+		all_records = append(all_records, *NewRecordInfo(AppToken, TableId, value.(map[string]any)))
+	}
+
+	return all_records
+}
+
 // Get A Record by AppToken, TableId and RecordId
 func (c AppClient) DocumentGetRecord(AppToken string, TableId string, RecordId string) *RecordInfo {
 	query := make(map[string]any)

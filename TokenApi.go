@@ -64,3 +64,20 @@ func (c *AppClient) GetUserAccessToken(code string) *UserAccessToken {
 
 	return NewUserAccessToken(resp)
 }
+
+func (c *AppClient) GetCode(redirectURL string, appID string) string {
+	u := "open-apis/authen/v1/index"
+
+	query := make(map[string]any)
+	query["redirect_uri"] = redirectURL
+	query["app_id"] = appID
+
+	resp := c.Request("post", u, query, nil, nil)
+
+	if resp == nil {
+		logrus.Error("nil code return")
+		return ""
+	}
+
+	return resp["code"].(string)
+}

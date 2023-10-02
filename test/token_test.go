@@ -14,6 +14,6 @@ func TestGetCode(t *testing.T) {
 
 	cli.StartTokenTimer()
 
-	token := cli.GetCode("https://open.feishu.cn/document/uqwQjLasdq04CN%2fucDOz4yN4MjL3gzM", "cli_a4da07bdbe38d00e")
-	logrus.Info(token)
+	code := cli.GetCode("https://open.feishu.cn/uqwQjLasdq04CN%2fucDOz4yN4MjL3gzM", "cli_a4da07bdbe38d00e")
+	logrus.Info(code)
 }

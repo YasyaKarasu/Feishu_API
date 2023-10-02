@@ -28,10 +28,13 @@ func (c AppClient) UserInfoById(UserId string, IdType UserIdType) *UserInfo {
 	}
 }
 
-func (c AppClient) UserInfoByName(name string) *UserInfo {
+func (c AppClient) UserInfoByName(name string, userAccessToken string) *UserInfo {
+	headers := make(map[string]string)
+	headers["Authorization"] = userAccessToken
+
 	query := make(map[string]any)
 	query["query"] = name
-	data := c.Request("get", "open-apis/search/v1/user", query, nil, nil)
+	data := c.Request("get", "open-apis/search/v1/user", query, headers, nil)
 	if data == nil {
 		logrus.WithField("name", name).Warn("nil user info return")
 		return nil

@@ -14,6 +14,6 @@ func TestUserInfoByName(t *testing.T) {
 
 	cli.StartTokenTimer()
 
-	userInfo := cli.UserInfoByName("农玉俊")
+	userInfo := cli.UserInfoByName("张三", "")
 	logrus.Info(userInfo)
 }
